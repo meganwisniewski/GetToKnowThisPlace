@@ -6,103 +6,102 @@
   <title>Get To Know This Place · Bay Area Explorer</title>
   <meta name="description" content="An interactive guide to exploring San Francisco Bay Area art museums, galleries, movie theaters, parks, botanic gardens, hikes, and events." />
 
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
   <!-- Leaflet (free map library) -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand">
-      <span class="brand-mark">🌉</span>
-      <div>
-        <h1>Get To Know This Place</h1>
-        <p class="tagline">Explore the San Francisco Bay Area — one museum, trail, and theater at a time.</p>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="brand">
+        <span class="brand-mark">🌉</span>
+        <div>
+          <h1>Get To Know This Place</h1>
+          <p class="tagline">Your interactive guide to exploring the San Francisco Bay Area.</p>
+        </div>
       </div>
-    </div>
-    <div class="header-stats">
       <span id="resultCount" class="count-pill">0 places</span>
     </div>
   </header>
 
-  <!-- ----------------------------- Filters ----------------------------- -->
-  <section class="filters" aria-label="Filters">
-    <div class="filter-row">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input
-          type="search"
-          id="searchInput"
-          placeholder="Search places, e.g. redwoods, mission, free…"
-          autocomplete="off"
-        />
+  <div class="page">
+    <!-- ----------------------------- Filters ----------------------------- -->
+    <section class="filters" aria-label="Filters">
+      <div class="filter-row">
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input type="search" id="searchInput" placeholder="Search places — e.g. redwoods, mission, free…" autocomplete="off" />
+        </div>
+
+        <select id="areaSelect" aria-label="Filter by area">
+          <option value="">All areas</option>
+        </select>
+
+        <label class="toggle">
+          <input type="checkbox" id="freeOnly" />
+          <span>Free only</span>
+        </label>
+
+        <label class="toggle">
+          <input type="checkbox" id="favOnly" />
+          <span>⭐ Favorites</span>
+        </label>
+
+        <button id="resetBtn" class="ghost-btn" type="button">Reset</button>
       </div>
 
-      <select id="areaSelect" aria-label="Filter by area">
-        <option value="">All areas</option>
-      </select>
-
-      <label class="toggle">
-        <input type="checkbox" id="freeOnly" />
-        <span>Free only</span>
-      </label>
-
-      <label class="toggle">
-        <input type="checkbox" id="favOnly" />
-        <span>⭐ Favorites only</span>
-      </label>
-
-      <button id="resetBtn" class="ghost-btn" type="button">Reset</button>
-    </div>
-
-    <div class="filter-row chips" id="categoryChips" role="group" aria-label="Filter by category">
-      <!-- category chips injected by JS -->
-    </div>
-  </section>
-
-  <!-- ------------------------------- Tabs ------------------------------- -->
-  <nav class="tabs" role="tablist">
-    <button class="tab active" data-view="map"   role="tab" aria-selected="true">🗺️ Map</button>
-    <button class="tab"        data-view="cards" role="tab" aria-selected="false">🃏 Cards</button>
-    <button class="tab"        data-view="list"  role="tab" aria-selected="false">📋 List</button>
-  </nav>
-
-  <main>
-    <!-- Map view -->
-    <section id="view-map" class="view active">
-      <div id="map"></div>
-      <button id="locateBtn" class="locate-btn" type="button" title="Find places near me">📍 Near me</button>
+      <div class="filter-row chips" id="categoryChips" role="group" aria-label="Filter by category"></div>
     </section>
 
-    <!-- Cards view -->
-    <section id="view-cards" class="view">
-      <div id="cardsGrid" class="cards-grid"></div>
-      <p id="cardsEmpty" class="empty-msg" hidden>No places match your filters yet.</p>
-    </section>
+    <!-- ------------------------------- Tabs ------------------------------- -->
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button class="tab active" data-view="map"   role="tab" aria-selected="true">🗺️ Map</button>
+      <button class="tab"        data-view="cards" role="tab" aria-selected="false">🃏 Cards</button>
+      <button class="tab"        data-view="list"  role="tab" aria-selected="false">📋 List</button>
+    </nav>
 
-    <!-- List view -->
-    <section id="view-list" class="view">
-      <div class="table-wrap">
-        <table id="listTable">
-          <thead>
-            <tr>
-              <th data-sort="name">Name ▾</th>
-              <th data-sort="category">Category</th>
-              <th data-sort="area">Area</th>
-              <th data-sort="free">Cost</th>
-              <th>Links</th>
-            </tr>
-          </thead>
-          <tbody id="listBody"></tbody>
-        </table>
-      </div>
-      <p id="listEmpty" class="empty-msg" hidden>No places match your filters yet.</p>
-    </section>
-  </main>
+    <main>
+      <!-- Map view -->
+      <section id="view-map" class="view active">
+        <div class="map-shell">
+          <div id="map"></div>
+          <button id="locateBtn" class="locate-btn" type="button" title="Find places near me">📍 Near me</button>
+        </div>
+        <p id="mapError" class="empty-msg" hidden>The map couldn't load (check your connection) — but the Cards and List tabs work fine.</p>
+      </section>
+
+      <!-- Cards view -->
+      <section id="view-cards" class="view">
+        <div id="cardsGrid" class="cards-grid"></div>
+        <p id="cardsEmpty" class="empty-msg" hidden>No places match your filters yet.</p>
+      </section>
+
+      <!-- List view -->
+      <section id="view-list" class="view">
+        <div class="table-card">
+          <table id="listTable">
+            <thead>
+              <tr>
+                <th data-sort="name">Name</th>
+                <th data-sort="category">Category</th>
+                <th data-sort="area">Area</th>
+                <th data-sort="free">Cost</th>
+                <th>Links</th>
+              </tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+          </table>
+        </div>
+        <p id="listEmpty" class="empty-msg" hidden>No places match your filters yet.</p>
+      </section>
+    </main>
+  </div>
 
   <footer class="site-footer">
     <p>
@@ -112,11 +111,7 @@
   </footer>
 
   <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
