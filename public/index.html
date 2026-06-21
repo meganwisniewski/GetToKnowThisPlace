@@ -14,7 +14,363 @@
   <!-- Leaflet (free map library) — via cdnjs (Cloudflare), rarely ad-blocked -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+/* ===========================================================================
+   Get To Know This Place — styles (v2, light & modern)
+   =========================================================================== */
+:root {
+  --bg:        #f5f7fb;
+  --surface:   #ffffff;
+  --ink:       #16233a;
+  --muted:     #62718a;
+  --line:      #e7ecf3;
+  --brand:     #ff6a3d;     /* golden-gate coral   */
+  --brand-ink: #b8350f;
+  --accent:    #1f7fc0;     /* bay blue            */
+  --gold:      #f5b301;
+  --good:      #18a957;
+  --radius:    16px;
+  --radius-sm: 10px;
+  --shadow-sm: 0 1px 2px rgba(20, 35, 60, 0.06), 0 1px 3px rgba(20, 35, 60, 0.08);
+  --shadow-md: 0 6px 20px rgba(20, 35, 60, 0.10);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+
+/* -------------------------------- Hero ---------------------------------- */
+.hero {
+  background:
+    radial-gradient(1200px 400px at 80% -50%, rgba(255,255,255,0.18), transparent 60%),
+    linear-gradient(120deg, #103b63 0%, #1c6ea4 55%, #ff6a3d 165%);
+  color: #fff;
+  padding: 26px 0 30px;
+  box-shadow: var(--shadow-md);
+}
+.hero-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.brand { display: flex; align-items: center; gap: 16px; }
+.brand-mark {
+  font-size: 2.6rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+}
+.hero h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.tagline { margin: 3px 0 0; font-size: 0.97rem; opacity: 0.92; font-weight: 500; }
+.count-pill {
+  background: rgba(255,255,255,0.16);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-weight: 700;
+  padding: 9px 16px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* -------------------------------- Page ---------------------------------- */
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+/* ------------------------------- Filters -------------------------------- */
+.filters {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+  margin-top: -18px;          /* float over hero edge */
+  position: relative;
+  z-index: 5;
+}
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.filter-row + .filter-row { margin-top: 14px; }
+
+.search-wrap { position: relative; flex: 1 1 300px; min-width: 220px; }
+.search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); opacity: 0.55; }
+#searchInput {
+  width: 100%;
+  padding: 11px 14px 11px 38px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: var(--ink);
+  background: #fbfcfe;
+  transition: border-color .15s, box-shadow .15s;
+}
+#searchInput:focus, #areaSelect:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31,127,192,0.15);
+}
+#areaSelect {
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: var(--ink);
+  background: #fbfcfe;
+  cursor: pointer;
+}
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: #fbfcfe;
+}
+.toggle input { accent-color: var(--brand); cursor: pointer; width: 16px; height: 16px; }
+.ghost-btn {
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  transition: all .15s;
+}
+.ghost-btn:hover { color: var(--brand-ink); border-color: var(--brand); background: #fff5f1; }
+
+/* Category chips */
+.chips { gap: 8px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  transition: all .15s;
+}
+.chip:hover { border-color: var(--chip-color); color: var(--ink); }
+.chip.active {
+  background: var(--chip-color);
+  color: #fff;
+  border-color: var(--chip-color);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--chip-color) 40%, transparent);
+}
+
+/* -------------------------------- Tabs ---------------------------------- */
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  margin: 22px 0 18px;
+  padding: 5px;
+  background: #eef2f8;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.tab {
+  padding: 9px 22px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+/* -------------------------------- Views --------------------------------- */
+.view { display: none; }
+.view.active { display: block; animation: fade .25s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* Map */
+.map-shell { position: relative; }
+#map {
+  height: min(68vh, 720px);
+  min-height: 440px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  background: #dde6ee;
+  z-index: 1;
+}
+.locate-btn {
+  position: absolute;
+  bottom: 18px;
+  right: 16px;
+  z-index: 600;
+  padding: 11px 18px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+.locate-btn:hover { filter: brightness(1.05); }
+
+/* Leaflet popup theming */
+.leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: var(--shadow-md); }
+.leaflet-popup-content { margin: 14px 16px; }
+.popup .popup-cat { font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; }
+.popup h3 { margin: 4px 0 6px; font-size: 1.1rem; }
+.popup p { margin: 6px 0; font-size: 0.86rem; color: var(--muted); }
+.popup .popup-links { display: flex; align-items: center; gap: 14px; margin-top: 10px; font-size: 0.86rem; font-weight: 600; }
+.popup .fav-btn { cursor: pointer; background: none; border: none; font-size: 1.2rem; padding: 0; margin-left: auto; }
+
+/* Custom marker pin */
+.pin {
+  width: 30px; height: 30px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2.5px solid #fff;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.pin span { transform: rotate(45deg); font-size: 0.85rem; }
+
+/* Cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding-bottom: 10px;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform .14s, box-shadow .14s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.card-cat {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .4px;
+  padding: 5px 11px; border-radius: 999px;
+}
+.card h3 { margin: 0; font-size: 1.16rem; font-weight: 700; letter-spacing: -0.2px; }
+.card-meta { font-size: 0.85rem; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.card-desc { font-size: 0.92rem; color: #3a4760; flex: 1; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 0.72rem; padding: 3px 9px; background: #f1f5fa; border-radius: 7px; color: var(--muted); font-weight: 600; }
+.badge-free { font-size: 0.7rem; font-weight: 800; color: #0c6b34; background: #d8f5e3; padding: 3px 9px; border-radius: 7px; letter-spacing: .3px; }
+
+.card-actions { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.btn {
+  text-decoration: none; font-size: 0.85rem; font-weight: 700;
+  padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line);
+  color: var(--ink); background: #fff; transition: all .14s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { filter: brightness(1.07); color: #fff; }
+.fav-star {
+  margin-left: auto;
+  background: none; border: none; font-size: 1.4rem; cursor: pointer; line-height: 1;
+  filter: grayscale(1) opacity(0.4); transition: filter .14s, transform .14s;
+}
+.fav-star:hover { transform: scale(1.18); }
+.fav-star.on { filter: none; }
+
+/* List / table */
+.table-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+#listTable { width: 100%; border-collapse: collapse; }
+#listTable th, #listTable td { text-align: left; padding: 13px 16px; font-size: 0.9rem; }
+#listTable thead th {
+  background: #f3f6fb;
+  cursor: pointer; user-select: none;
+  font-size: 0.76rem; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 800;
+  border-bottom: 1px solid var(--line);
+}
+#listTable thead th:hover { color: var(--ink); }
+#listTable tbody tr { border-bottom: 1px solid var(--line); }
+#listTable tbody tr:last-child { border-bottom: none; }
+#listTable tbody tr:hover { background: #f8fafc; }
+.list-cat-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+#listTable td a { text-decoration: none; font-weight: 700; }
+#listTable td a:hover { text-decoration: underline; }
+#listTable td:first-child { font-weight: 700; }
+
+.empty-msg { text-align: center; color: var(--muted); padding: 56px 20px; font-size: 1rem; }
+
+/* ------------------------------- Footer --------------------------------- */
+.site-footer {
+  margin-top: 36px;
+  padding: 22px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+.site-footer a { color: var(--muted); }
+
+/* ----------------------------- Responsive ------------------------------- */
+@media (max-width: 640px) {
+  .hero-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .hero h1 { font-size: 1.4rem; }
+  .tabs { display: flex; width: 100%; }
+  .tab { flex: 1; padding: 9px 8px; }
+  #map { height: 60vh; }
+}
+
+</style>
 </head>
 <body>
   <header class="hero">
@@ -111,8 +467,888 @@
   </footer>
 
   <!-- App data + logic FIRST, so the page always works even if the map CDN is blocked -->
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+  <script>
+// ============================================================================
+//  Get To Know This Place — curated Bay Area starter data
+//  Each place: id, name, category, area, lat, lng, description, address,
+//  website, free (bool), tags []
+//  Coordinates are approximate (good enough for map pins).
+// ============================================================================
+
+const CATEGORIES = {
+  "Art Museum":      { color: "#e74c3c", icon: "🖼️" },
+  "Gallery":         { color: "#9b59b6", icon: "🎨" },
+  "Movie Theater":   { color: "#f39c12", icon: "🎬" },
+  "Park":            { color: "#27ae60", icon: "🌳" },
+  "Botanic Garden":  { color: "#16a085", icon: "🌺" },
+  "Hike":            { color: "#8b5a2b", icon: "🥾" },
+  "Event Venue":     { color: "#3498db", icon: "🎟️" },
+};
+
+const AREAS = [
+  "San Francisco",
+  "East Bay",
+  "Marin",
+  "Peninsula",
+  "South Bay",
+];
+
+const PLACES = [
+  // ----------------------------- Art Museums -----------------------------
+  {
+    id: "sfmoma",
+    name: "SFMOMA",
+    category: "Art Museum",
+    area: "San Francisco",
+    lat: 37.7857, lng: -122.4011,
+    description: "One of the largest modern & contemporary art museums in the U.S. Seven floors plus a free-to-enter ground level and a wonderful living wall.",
+    address: "151 3rd St, San Francisco",
+    website: "https://www.sfmoma.org",
+    free: false,
+    tags: ["modern art", "contemporary", "indoor", "rainy day"],
+  },
+  {
+    id: "deyoung",
+    name: "de Young Museum",
+    category: "Art Museum",
+    area: "San Francisco",
+    lat: 37.7715, lng: -122.4686,
+    description: "Fine arts museum in Golden Gate Park with a free observation tower offering 360° city views.",
+    address: "50 Hagiwara Tea Garden Dr, San Francisco",
+    website: "https://www.famsf.org/visit/de-young",
+    free: false,
+    tags: ["american art", "tower", "golden gate park", "views"],
+  },
+  {
+    id: "legion-of-honor",
+    name: "Legion of Honor",
+    category: "Art Museum",
+    area: "San Francisco",
+    lat: 37.7841, lng: -122.5008,
+    description: "European art in a stunning neoclassical building overlooking the Golden Gate. A Rodin 'Thinker' greets you in the courtyard.",
+    address: "100 34th Ave, San Francisco",
+    website: "https://www.famsf.org/visit/legion-of-honor",
+    free: false,
+    tags: ["european art", "ocean views", "architecture"],
+  },
+  {
+    id: "asian-art-museum",
+    name: "Asian Art Museum",
+    category: "Art Museum",
+    area: "San Francisco",
+    lat: 37.7803, lng: -122.4163,
+    description: "One of the largest collections of Asian art in the world, spanning 6,000 years and dozens of cultures.",
+    address: "200 Larkin St, San Francisco",
+    website: "https://asianart.org",
+    free: false,
+    tags: ["asian art", "indoor", "rainy day"],
+  },
+  {
+    id: "omca",
+    name: "Oakland Museum of California",
+    category: "Art Museum",
+    area: "East Bay",
+    lat: 37.7975, lng: -122.2640,
+    description: "Art, history & natural science of California under one roof, with lively Friday Nights @ OMCA food + music events.",
+    address: "1000 Oak St, Oakland",
+    website: "https://museumca.org",
+    free: false,
+    tags: ["california", "family friendly", "gardens", "friday nights"],
+  },
+  {
+    id: "bampfa",
+    name: "BAMPFA (Berkeley Art Museum & Pacific Film Archive)",
+    category: "Art Museum",
+    area: "East Bay",
+    lat: 37.8694, lng: -122.2596,
+    description: "Contemporary art museum and renowned film archive in one. Doubles as one of the best repertory cinemas in the region.",
+    address: "2155 Center St, Berkeley",
+    website: "https://bampfa.org",
+    free: false,
+    tags: ["contemporary", "film", "university"],
+  },
+  {
+    id: "cantor",
+    name: "Cantor Arts Center (Stanford)",
+    category: "Art Museum",
+    area: "Peninsula",
+    lat: 37.4322, lng: -122.1701,
+    description: "Free university art museum with the largest Rodin collection outside Paris, plus an outdoor sculpture garden.",
+    address: "328 Lomita Dr, Stanford",
+    website: "https://museum.stanford.edu",
+    free: true,
+    tags: ["free", "rodin", "sculpture garden", "university"],
+  },
+  {
+    id: "sjma",
+    name: "San José Museum of Art",
+    category: "Art Museum",
+    area: "South Bay",
+    lat: 37.3329, lng: -121.8896,
+    description: "Modern & contemporary art focused on the West Coast and new media, in downtown San José.",
+    address: "110 S Market St, San José",
+    website: "https://sjmusart.org",
+    free: false,
+    tags: ["contemporary", "new media", "downtown"],
+  },
+
+  // ------------------------------- Galleries ------------------------------
+  {
+    id: "minnesota-street",
+    name: "Minnesota Street Project",
+    category: "Gallery",
+    area: "San Francisco",
+    lat: 37.7553, lng: -122.3990,
+    description: "A hub of contemporary art galleries and artist studios under one roof in the Dogpatch. Free to wander.",
+    address: "1275 Minnesota St, San Francisco",
+    website: "https://minnesotastreetproject.com",
+    free: true,
+    tags: ["free", "contemporary", "dogpatch", "multiple galleries"],
+  },
+  {
+    id: "fraenkel",
+    name: "Fraenkel Gallery",
+    category: "Gallery",
+    area: "San Francisco",
+    lat: 37.7895, lng: -122.4045,
+    description: "Internationally renowned photography gallery in the Union Square gallery district.",
+    address: "49 Geary St, San Francisco",
+    website: "https://fraenkelgallery.com",
+    free: true,
+    tags: ["free", "photography", "union square"],
+  },
+  {
+    id: "creativity-explored",
+    name: "Creativity Explored",
+    category: "Gallery",
+    area: "San Francisco",
+    lat: 37.7510, lng: -122.4196,
+    description: "Nonprofit studio and gallery showcasing artists with developmental disabilities. Bright, joyful, and free.",
+    address: "3245 16th St, San Francisco",
+    website: "https://www.creativityexplored.org",
+    free: true,
+    tags: ["free", "nonprofit", "mission"],
+  },
+  {
+    id: "catharine-clark",
+    name: "Catharine Clark Gallery",
+    category: "Gallery",
+    area: "San Francisco",
+    lat: 37.7556, lng: -122.3992,
+    description: "Contemporary gallery known for new-media and politically engaged work, located in the Minnesota Street Project complex.",
+    address: "1275 Minnesota St, San Francisco",
+    website: "https://cclarkgallery.com",
+    free: true,
+    tags: ["free", "contemporary", "dogpatch"],
+  },
+  {
+    id: "k-imperial",
+    name: "K. Imperial Fine Art",
+    category: "Gallery",
+    area: "San Francisco",
+    lat: 37.7896, lng: -122.4043,
+    description: "Contemporary fine art gallery in the heart of the downtown gallery walk on Geary Street.",
+    address: "49 Geary St, San Francisco",
+    website: "https://kimperialfineart.com",
+    free: true,
+    tags: ["free", "contemporary", "union square"],
+  },
+
+  // ----------------------------- Movie Theaters ---------------------------
+  {
+    id: "castro-theatre",
+    name: "Castro Theatre",
+    category: "Movie Theater",
+    area: "San Francisco",
+    lat: 37.7620, lng: -122.4348,
+    description: "Iconic 1922 movie palace famous for classic film screenings, sing-alongs, and a live Wurlitzer organ.",
+    address: "429 Castro St, San Francisco",
+    website: "https://www.castrotheatre.com",
+    free: false,
+    tags: ["historic", "repertory", "landmark"],
+  },
+  {
+    id: "roxie",
+    name: "Roxie Theater",
+    category: "Movie Theater",
+    area: "San Francisco",
+    lat: 37.7649, lng: -122.4221,
+    description: "Nonprofit indie cinema (since 1909) showing documentaries, foreign films, and cult classics in the Mission.",
+    address: "3117 16th St, San Francisco",
+    website: "https://roxie.com",
+    free: false,
+    tags: ["indie", "documentary", "nonprofit", "mission"],
+  },
+  {
+    id: "alamo-new-mission",
+    name: "Alamo Drafthouse New Mission",
+    category: "Movie Theater",
+    area: "San Francisco",
+    lat: 37.7565, lng: -122.4189,
+    description: "Restored 1916 theater where you can order food & drinks to your seat. Great special events and themed screenings.",
+    address: "2550 Mission St, San Francisco",
+    website: "https://drafthouse.com/sf",
+    free: false,
+    tags: ["dine-in", "events", "mission"],
+  },
+  {
+    id: "balboa",
+    name: "Balboa Theatre",
+    category: "Movie Theater",
+    area: "San Francisco",
+    lat: 37.7773, lng: -122.4988,
+    description: "Charming 1926 neighborhood double-feature house in the Outer Richmond.",
+    address: "3630 Balboa St, San Francisco",
+    website: "https://www.balboamovies.com",
+    free: false,
+    tags: ["historic", "neighborhood", "richmond"],
+  },
+  {
+    id: "grand-lake",
+    name: "Grand Lake Theatre",
+    category: "Movie Theater",
+    area: "East Bay",
+    lat: 37.8108, lng: -122.2469,
+    description: "Beloved 1926 Oakland landmark with a glowing marquee, Friday-night organ, and a mix of new and classic films.",
+    address: "3200 Grand Ave, Oakland",
+    website: "https://www.renaissancerialto.com",
+    free: false,
+    tags: ["historic", "landmark", "organ"],
+  },
+  {
+    id: "new-parkway",
+    name: "The New Parkway Theater",
+    category: "Movie Theater",
+    area: "East Bay",
+    lat: 37.8079, lng: -122.2680,
+    description: "Cozy Oakland cinema-pub with couches, food, beer, trivia nights, and second-run films.",
+    address: "474 24th St, Oakland",
+    website: "https://www.thenewparkway.com",
+    free: false,
+    tags: ["couches", "dine-in", "trivia", "second-run"],
+  },
+
+  // -------------------------------- Parks ---------------------------------
+  {
+    id: "golden-gate-park",
+    name: "Golden Gate Park",
+    category: "Park",
+    area: "San Francisco",
+    lat: 37.7694, lng: -122.4862,
+    description: "1,000+ acres of gardens, lakes, museums, bison, and windmills stretching to the ocean. A whole day's worth of exploring.",
+    address: "Golden Gate Park, San Francisco",
+    website: "https://sfrecpark.org/770/Golden-Gate-Park",
+    free: true,
+    tags: ["free", "huge", "gardens", "family friendly", "picnic"],
+  },
+  {
+    id: "dolores-park",
+    name: "Mission Dolores Park",
+    category: "Park",
+    area: "San Francisco",
+    lat: 37.7596, lng: -122.4269,
+    description: "Sunny hillside park with skyline views — the city's favorite spot to picnic and people-watch on a warm day.",
+    address: "Dolores St & 19th St, San Francisco",
+    website: "https://sfrecpark.org/853/Mission-Dolores-Park",
+    free: true,
+    tags: ["free", "views", "picnic", "sunny", "mission"],
+  },
+  {
+    id: "presidio",
+    name: "Presidio of San Francisco",
+    category: "Park",
+    area: "San Francisco",
+    lat: 37.7989, lng: -122.4662,
+    description: "A national park site with forests, trails, beaches, the Tunnel Tops park, and Golden Gate Bridge overlooks.",
+    address: "Presidio, San Francisco",
+    website: "https://www.presidio.gov",
+    free: true,
+    tags: ["free", "national park", "trails", "bridge views"],
+  },
+  {
+    id: "crissy-field",
+    name: "Crissy Field",
+    category: "Park",
+    area: "San Francisco",
+    lat: 37.8039, lng: -122.4647,
+    description: "Flat waterfront promenade with unbeatable Golden Gate Bridge views — perfect for a stroll, run, or picnic.",
+    address: "1199 East Beach, San Francisco",
+    website: "https://www.parksconservancy.org/parks/crissy-field",
+    free: true,
+    tags: ["free", "waterfront", "bridge views", "walking"],
+  },
+  {
+    id: "lake-merritt",
+    name: "Lake Merritt",
+    category: "Park",
+    area: "East Bay",
+    lat: 37.8044, lng: -122.2581,
+    description: "A tidal lagoon ringed by a 3.4-mile path, gardens, a bird sanctuary, and a necklace of lights at night.",
+    address: "Lake Merritt, Oakland",
+    website: "https://www.oaklandca.gov/topics/lake-merritt",
+    free: true,
+    tags: ["free", "walking loop", "birds", "downtown oakland"],
+  },
+  {
+    id: "tilden",
+    name: "Tilden Regional Park",
+    category: "Park",
+    area: "East Bay",
+    lat: 37.8983, lng: -122.2447,
+    description: "Sprawling Berkeley hills park with a botanic garden, steam train, carousel, lake swimming, and miles of trails.",
+    address: "Tilden Regional Park, Berkeley",
+    website: "https://www.ebparks.org/parks/tilden",
+    free: true,
+    tags: ["free", "family friendly", "trails", "swimming", "trains"],
+  },
+
+  // ---------------------------- Botanic Gardens ---------------------------
+  {
+    id: "sf-botanical",
+    name: "San Francisco Botanical Garden",
+    category: "Botanic Garden",
+    area: "San Francisco",
+    lat: 37.7676, lng: -122.4690,
+    description: "55 acres and 8,000+ plant species inside Golden Gate Park, with a magnificent magnolia collection in late winter.",
+    address: "1199 9th Ave, San Francisco",
+    website: "https://www.sfbg.org",
+    free: false,
+    tags: ["golden gate park", "magnolias", "peaceful"],
+  },
+  {
+    id: "conservatory-flowers",
+    name: "Conservatory of Flowers",
+    category: "Botanic Garden",
+    area: "San Francisco",
+    lat: 37.7723, lng: -122.4602,
+    description: "A striking white Victorian glasshouse (1879) filled with tropical plants, orchids, and carnivorous oddities.",
+    address: "100 John F Kennedy Dr, San Francisco",
+    website: "https://conservatoryofflowers.org",
+    free: false,
+    tags: ["historic", "tropical", "glasshouse", "golden gate park"],
+  },
+  {
+    id: "japanese-tea-garden",
+    name: "Japanese Tea Garden",
+    category: "Botanic Garden",
+    area: "San Francisco",
+    lat: 37.7702, lng: -122.4703,
+    description: "The oldest public Japanese garden in the U.S. — pagodas, koi ponds, a moon bridge, and a tea house. Free before 10am certain days.",
+    address: "75 Hagiwara Tea Garden Dr, San Francisco",
+    website: "https://japaneseteagardensf.com",
+    free: false,
+    tags: ["japanese garden", "koi", "tea", "golden gate park"],
+  },
+  {
+    id: "uc-botanical",
+    name: "UC Botanical Garden at Berkeley",
+    category: "Botanic Garden",
+    area: "East Bay",
+    lat: 37.8757, lng: -122.2386,
+    description: "34 acres in Strawberry Canyon with 10,000+ plant types from around the world and great bay views.",
+    address: "200 Centennial Dr, Berkeley",
+    website: "https://botanicalgarden.berkeley.edu",
+    free: false,
+    tags: ["diverse plants", "bay views", "hillside"],
+  },
+  {
+    id: "ruth-bancroft",
+    name: "Ruth Bancroft Garden",
+    category: "Botanic Garden",
+    area: "East Bay",
+    lat: 37.9101, lng: -122.0652,
+    description: "A renowned dry garden of succulents and cacti in Walnut Creek — a pioneer of water-wise landscaping.",
+    address: "1552 Bancroft Rd, Walnut Creek",
+    website: "https://www.ruthbancroftgarden.org",
+    free: false,
+    tags: ["succulents", "cacti", "drought tolerant"],
+  },
+  {
+    id: "filoli",
+    name: "Filoli Historic House & Garden",
+    category: "Botanic Garden",
+    area: "Peninsula",
+    lat: 37.4709, lng: -122.3127,
+    description: "A grand 1917 country estate in Woodside with 16 acres of formal English gardens and seasonal blooms.",
+    address: "86 Cañada Rd, Woodside",
+    website: "https://filoli.org",
+    free: false,
+    tags: ["historic estate", "formal gardens", "seasonal blooms"],
+  },
+
+  // -------------------------------- Hikes ---------------------------------
+  {
+    id: "lands-end",
+    name: "Lands End Trail",
+    category: "Hike",
+    area: "San Francisco",
+    lat: 37.7800, lng: -122.5119,
+    description: "Dramatic coastal cliff trail with Golden Gate views, shipwreck spotting, a labyrinth, and the Sutro Baths ruins.",
+    address: "680 Point Lobos Ave, San Francisco",
+    website: "https://www.nps.gov/goga/planyourvisit/landsend.htm",
+    free: true,
+    tags: ["free", "coastal", "easy", "views", "ruins"],
+  },
+  {
+    id: "twin-peaks",
+    name: "Twin Peaks",
+    category: "Hike",
+    area: "San Francisco",
+    lat: 37.7544, lng: -122.4477,
+    description: "A short, steep climb to one of the best 360° panoramas of San Francisco. Spectacular at sunset.",
+    address: "501 Twin Peaks Blvd, San Francisco",
+    website: "https://sfrecpark.org/facilities/facility/details/Twin-Peaks",
+    free: true,
+    tags: ["free", "short", "panorama", "sunset"],
+  },
+  {
+    id: "muir-woods",
+    name: "Muir Woods National Monument",
+    category: "Hike",
+    area: "Marin",
+    lat: 37.8970, lng: -122.5811,
+    description: "Walk among ancient coast redwoods on gentle boardwalk loops. Reservations required for parking/shuttle.",
+    address: "1 Muir Woods Rd, Mill Valley",
+    website: "https://www.nps.gov/muwo",
+    free: false,
+    tags: ["redwoods", "easy", "boardwalk", "reservations"],
+  },
+  {
+    id: "mount-tam",
+    name: "Mount Tamalpais (Dipsea / East Peak)",
+    category: "Hike",
+    area: "Marin",
+    lat: 37.9236, lng: -122.5965,
+    description: "Marin's iconic mountain with trails for every level and sweeping views over the bay, ocean, and fog.",
+    address: "Mount Tamalpais State Park, Mill Valley",
+    website: "https://www.parks.ca.gov/?page_id=471",
+    free: true,
+    tags: ["free", "mountain", "views", "varied difficulty"],
+  },
+  {
+    id: "tennessee-valley",
+    name: "Tennessee Valley Trail",
+    category: "Hike",
+    area: "Marin",
+    lat: 37.8590, lng: -122.5360,
+    description: "An easy, mostly flat walk through a valley to a secluded cove beach. Great for all ages.",
+    address: "Tennessee Valley Rd, Mill Valley",
+    website: "https://www.nps.gov/goga/planyourvisit/tennessee-valley.htm",
+    free: true,
+    tags: ["free", "easy", "beach", "family friendly"],
+  },
+  {
+    id: "mount-diablo",
+    name: "Mount Diablo State Park",
+    category: "Hike",
+    area: "East Bay",
+    lat: 37.8816, lng: -121.9142,
+    description: "On a clear day, the summit offers one of the largest viewsheds in the world. Many trails plus a drive-up peak.",
+    address: "Mount Diablo State Park, Walnut Creek",
+    website: "https://www.parks.ca.gov/?page_id=517",
+    free: false,
+    tags: ["summit", "epic views", "varied difficulty"],
+  },
+  {
+    id: "mori-point",
+    name: "Mori Point",
+    category: "Hike",
+    area: "Peninsula",
+    lat: 37.6360, lng: -122.4969,
+    description: "Pacifica bluff trails with crashing-surf views, wildflowers, and a coastal staircase loop.",
+    address: "Mori Point Rd, Pacifica",
+    website: "https://www.nps.gov/goga/planyourvisit/mori-point.htm",
+    free: true,
+    tags: ["free", "coastal", "bluffs", "wildflowers"],
+  },
+
+  // ----------------------------- Event Venues -----------------------------
+  {
+    id: "ferry-building",
+    name: "Ferry Building Marketplace",
+    category: "Event Venue",
+    area: "San Francisco",
+    lat: 37.7955, lng: -122.3937,
+    description: "Historic marketplace and the famous farmers' market (Tue/Thu/Sat) right on the Embarcadero waterfront.",
+    address: "1 Ferry Building, San Francisco",
+    website: "https://www.ferrybuildingmarketplace.com",
+    free: true,
+    tags: ["free", "farmers market", "food", "waterfront"],
+  },
+  {
+    id: "stern-grove",
+    name: "Stern Grove Festival",
+    category: "Event Venue",
+    area: "San Francisco",
+    lat: 37.7345, lng: -122.4759,
+    description: "Free Sunday summer concerts in a gorgeous eucalyptus-and-redwood grove amphitheater (June–August).",
+    address: "19th Ave & Sloat Blvd, San Francisco",
+    website: "https://sterngrove.org",
+    free: true,
+    tags: ["free", "concerts", "summer", "outdoor"],
+  },
+  {
+    id: "yerba-buena-gardens",
+    name: "Yerba Buena Gardens",
+    category: "Event Venue",
+    area: "San Francisco",
+    lat: 37.7847, lng: -122.4031,
+    description: "Downtown green space hosting a free outdoor festival of music, dance, and culture in spring & summer.",
+    address: "750 Howard St, San Francisco",
+    website: "https://ybgfestival.org",
+    free: true,
+    tags: ["free", "festival", "music", "downtown"],
+  },
+  {
+    id: "the-fillmore",
+    name: "The Fillmore",
+    category: "Event Venue",
+    area: "San Francisco",
+    lat: 37.7841, lng: -122.4330,
+    description: "Legendary live-music hall where they still hand out free posters and apples. A piece of rock history.",
+    address: "1805 Geary Blvd, San Francisco",
+    website: "https://www.thefillmore.com",
+    free: false,
+    tags: ["live music", "historic", "concerts"],
+  },
+  {
+    id: "greek-theatre",
+    name: "Greek Theatre (Berkeley)",
+    category: "Event Venue",
+    area: "East Bay",
+    lat: 37.8736, lng: -122.2546,
+    description: "Open-air amphitheater on the UC Berkeley campus hosting top concerts under the stars.",
+    address: "2001 Gayley Rd, Berkeley",
+    website: "https://thegreekberkeley.com",
+    free: false,
+    tags: ["concerts", "outdoor", "amphitheater"],
+  },
+  {
+    id: "oakland-first-fridays",
+    name: "Oakland First Fridays",
+    category: "Event Venue",
+    area: "East Bay",
+    lat: 37.8085, lng: -122.2690,
+    description: "A free monthly street festival in the Uptown KONO district with art, food trucks, music, and makers.",
+    address: "Telegraph Ave, Oakland",
+    website: "https://oaklandfirstfridays.org",
+    free: true,
+    tags: ["free", "street festival", "art walk", "monthly"],
+  },
+];
+
+// Make data available to app.js
+window.BAY = { CATEGORIES, AREAS, PLACES };
+
+</script>
+  <script>
+// ============================================================================
+//  Get To Know This Place — app logic (v2)
+//  Vanilla JS. Three synced views (map / cards / list) over one filtered set.
+//  Hardened so a map/CDN failure never breaks the Cards & List tabs.
+// ============================================================================
+
+// Guard against data.js not having loaded — the shell/tabs still work either way.
+const BAY = window.BAY || { CATEGORIES: {}, AREAS: [], PLACES: [] };
+const { CATEGORIES, AREAS, PLACES } = BAY;
+
+const state = {
+  search: "",
+  area: "",
+  freeOnly: false,
+  favOnly: false,
+  activeCats: new Set(Object.keys(CATEGORIES)),
+  view: "map",
+  sortKey: "name",
+  sortDir: 1,
+  favorites: loadFavorites(),
+};
+
+// ----------------------------- Favorites ------------------------------------
+function loadFavorites() {
+  try { return new Set(JSON.parse(localStorage.getItem("bay_favorites") || "[]")); }
+  catch { return new Set(); }
+}
+function saveFavorites() {
+  try { localStorage.setItem("bay_favorites", JSON.stringify([...state.favorites])); } catch {}
+}
+function toggleFavorite(id) {
+  if (state.favorites.has(id)) state.favorites.delete(id);
+  else state.favorites.add(id);
+  saveFavorites();
+  render();
+}
+
+// ----------------------------- Filtering ------------------------------------
+function getFiltered() {
+  const q = state.search.trim().toLowerCase();
+  return PLACES.filter((p) => {
+    if (!state.activeCats.has(p.category)) return false;
+    if (state.area && p.area !== state.area) return false;
+    if (state.freeOnly && !p.free) return false;
+    if (state.favOnly && !state.favorites.has(p.id)) return false;
+    if (q) {
+      const hay = [p.name, p.description, p.category, p.area, ...(p.tags || [])].join(" ").toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+// ----------------------------- Filter controls ------------------------------
+function buildFilterControls() {
+  const areaSelect = document.getElementById("areaSelect");
+  AREAS.forEach((a) => {
+    const opt = document.createElement("option");
+    opt.value = a; opt.textContent = a;
+    areaSelect.appendChild(opt);
+  });
+
+  const chipWrap = document.getElementById("categoryChips");
+  Object.entries(CATEGORIES).forEach(([name, meta]) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chip active";
+    btn.style.setProperty("--chip-color", meta.color);
+    btn.textContent = `${meta.icon} ${name}`;
+    btn.dataset.cat = name;
+    btn.addEventListener("click", () => {
+      if (state.activeCats.has(name)) state.activeCats.delete(name);
+      else state.activeCats.add(name);
+      btn.classList.toggle("active");
+      render();
+    });
+    chipWrap.appendChild(btn);
+  });
+}
+
+// ----------------------------- Map ------------------------------------------
+let map, markerLayer, youMarker, mapReady = false;
+
+function initMap() {
+  if (typeof L === "undefined") throw new Error("Leaflet not loaded");
+  map = L.map("map", { zoomControl: true, scrollWheelZoom: true }).setView([37.78, -122.35], 10);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "© OpenStreetMap contributors",
+  }).addTo(map);
+  markerLayer = L.layerGroup().addTo(map);
+  map.on("popupopen", (e) => {
+    const btn = e.popup.getElement().querySelector("[data-fav]");
+    if (btn) btn.addEventListener("click", () => toggleFavorite(btn.dataset.fav));
+  });
+  mapReady = true;
+}
+
+function makeIcon(category) {
+  const meta = CATEGORIES[category];
+  return L.divIcon({
+    className: "",
+    html: `<div class="pin" style="background:${meta.color}"><span>${meta.icon}</span></div>`,
+    iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30],
+  });
+}
+
+function popupHtml(p) {
+  const meta = CATEGORIES[p.category];
+  const fav = state.favorites.has(p.id);
+  return `
+    <div class="popup">
+      <span class="popup-cat" style="color:${meta.color}">${meta.icon} ${p.category}</span>
+      <h3>${p.name}</h3>
+      <p>${p.description}</p>
+      <p>📍 ${p.address}${p.free ? " · 🆓 Free" : ""}</p>
+      <div class="popup-links">
+        <a href="${p.website}" target="_blank" rel="noopener">Website ↗</a>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Directions ↗</a>
+        <button class="fav-btn" data-fav="${p.id}" title="Toggle favorite">${fav ? "⭐" : "☆"}</button>
+      </div>
+    </div>`;
+}
+
+function renderMap(places) {
+  if (!mapReady) return;
+  markerLayer.clearLayers();
+  places.forEach((p) => {
+    L.marker([p.lat, p.lng], { icon: makeIcon(p.category) })
+      .bindPopup(popupHtml(p))
+      .addTo(markerLayer);
+  });
+}
+
+function locateMe() {
+  if (!mapReady) return;
+  if (!navigator.geolocation) { alert("Geolocation isn't supported by your browser."); return; }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords;
+      if (youMarker) map.removeLayer(youMarker);
+      youMarker = L.circleMarker([latitude, longitude], {
+        radius: 9, color: "#fff", weight: 2, fillColor: "#1f7fc0", fillOpacity: 1,
+      }).addTo(map).bindPopup("You are here").openPopup();
+      map.setView([latitude, longitude], 12);
+    },
+    () => alert("Could not get your location. Check your browser permissions."),
+  );
+}
+
+// ----------------------------- Cards ----------------------------------------
+function renderCards(places) {
+  const grid = document.getElementById("cardsGrid");
+  document.getElementById("cardsEmpty").hidden = places.length > 0;
+  grid.innerHTML = "";
+
+  places.forEach((p) => {
+    const meta = CATEGORIES[p.category];
+    const fav = state.favorites.has(p.id);
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-top">
+        <span class="card-cat" style="color:${meta.color};background:${meta.color}1a">${meta.icon} ${p.category}</span>
+        <button class="fav-star ${fav ? "on" : ""}" data-fav="${p.id}" title="Save to favorites">⭐</button>
+      </div>
+      <h3>${p.name}</h3>
+      <div class="card-meta">
+        <span>📍 ${p.area}</span>
+        ${p.free ? '<span class="badge-free">FREE</span>' : ""}
+      </div>
+      <p class="card-desc">${p.description}</p>
+      <div class="card-tags">${(p.tags || []).map((t) => `<span class="tag">${t}</span>`).join("")}</div>
+      <div class="card-actions">
+        <a class="btn" href="${p.website}" target="_blank" rel="noopener">Website ↗</a>
+        <a class="btn btn-primary" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Directions ↗</a>
+      </div>`;
+    card.querySelector("[data-fav]").addEventListener("click", () => toggleFavorite(p.id));
+    grid.appendChild(card);
+  });
+}
+
+// ----------------------------- List -----------------------------------------
+function renderList(places) {
+  const body = document.getElementById("listBody");
+  document.getElementById("listEmpty").hidden = places.length > 0;
+  body.innerHTML = "";
+
+  const sorted = [...places].sort((a, b) => {
+    let av = a[state.sortKey], bv = b[state.sortKey];
+    if (state.sortKey === "free") { av = a.free ? 0 : 1; bv = b.free ? 0 : 1; }
+    if (typeof av === "string") { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+    if (av < bv) return -state.sortDir;
+    if (av > bv) return state.sortDir;
+    return 0;
+  });
+
+  sorted.forEach((p) => {
+    const meta = CATEGORIES[p.category];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.name}</td>
+      <td><span class="list-cat-dot" style="background:${meta.color}"></span>${p.category}</td>
+      <td>${p.area}</td>
+      <td>${p.free ? "🆓 Free" : "💲 Paid"}</td>
+      <td>
+        <a href="${p.website}" target="_blank" rel="noopener">Site ↗</a> ·
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Map ↗</a>
+      </td>`;
+    body.appendChild(tr);
+  });
+}
+
+// ----------------------------- Render all -----------------------------------
+function render() {
+  const places = getFiltered();
+  document.getElementById("resultCount").textContent =
+    `${places.length} place${places.length === 1 ? "" : "s"}`;
+  renderMap(places);
+  renderCards(places);
+  renderList(places);
+}
+
+// ----------------------------- Tabs -----------------------------------------
+function switchView(view) {
+  state.view = view;
+  document.querySelectorAll(".tab").forEach((t) => {
+    const on = t.dataset.view === view;
+    t.classList.toggle("active", on);
+    t.setAttribute("aria-selected", on);
+  });
+  document.querySelectorAll(".view").forEach((v) => v.classList.toggle("active", v.id === `view-${view}`));
+  if (view === "map" && mapReady) setTimeout(() => map.invalidateSize(), 60);
+}
+
+// ----------------------------- Wire events ----------------------------------
+function wireEvents() {
+  document.getElementById("searchInput").addEventListener("input", (e) => { state.search = e.target.value; render(); });
+  document.getElementById("areaSelect").addEventListener("change", (e) => { state.area = e.target.value; render(); });
+  document.getElementById("freeOnly").addEventListener("change", (e) => { state.freeOnly = e.target.checked; render(); });
+  document.getElementById("favOnly").addEventListener("change", (e) => { state.favOnly = e.target.checked; render(); });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    state.search = ""; state.area = ""; state.freeOnly = false; state.favOnly = false;
+    state.activeCats = new Set(Object.keys(CATEGORIES));
+    document.getElementById("searchInput").value = "";
+    document.getElementById("areaSelect").value = "";
+    document.getElementById("freeOnly").checked = false;
+    document.getElementById("favOnly").checked = false;
+    document.querySelectorAll(".chip").forEach((c) => c.classList.add("active"));
+    render();
+  });
+
+  document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => switchView(t.dataset.view)));
+  document.getElementById("locateBtn").addEventListener("click", locateMe);
+
+  document.querySelectorAll("#listTable th[data-sort]").forEach((th) => {
+    th.addEventListener("click", () => {
+      const key = th.dataset.sort;
+      if (state.sortKey === key) state.sortDir *= -1;
+      else { state.sortKey = key; state.sortDir = 1; }
+      render();
+    });
+  });
+}
+
+// ----------------------------- Boot -----------------------------------------
+function showMapError() {
+  const err = document.getElementById("mapError");
+  if (err) err.hidden = false;
+  const m = document.getElementById("map");
+  if (m) m.style.display = "none";
+}
+
+// Init the map only when Leaflet is actually available (it loads async).
+function tryInitMap() {
+  if (mapReady) return;
+  if (typeof L === "undefined") return;
+  try { initMap(); render(); }
+  catch (e) { console.error("map init failed", e); showMapError(); }
+}
+
+function boot() {
+  // Filters + UI first — these never depend on the map library.
+  try { buildFilterControls(); } catch (e) { console.error("filters failed", e); }
+  try { wireEvents(); }          catch (e) { console.error("events failed", e); }
+  try { render(); }              catch (e) { console.error("render failed", e); }
+
+  // The map is optional and loaded asynchronously. Init now if Leaflet is
+  // already here; otherwise let the <script onload> hook trigger it, and show
+  // a friendly notice if the CDN is blocked and it never arrives.
+  if (typeof L !== "undefined") {
+    tryInitMap();
+  } else {
+    window.__onLeaflet = tryInitMap;
+    window.__onLeafletError = showMapError;
+    setTimeout(() => { if (!mapReady) showMapError(); }, 9000);
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}
+
+</script>
   <!-- Leaflet map library, loaded async so a blocked/slow CDN can never freeze the app -->
   <script async src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
           onload="window.__onLeaflet && window.__onLeaflet()"

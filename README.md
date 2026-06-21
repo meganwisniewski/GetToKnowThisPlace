@@ -9,14 +9,12 @@ deployed on **Cloudflare Pages**, Git-connected (push → auto-deploy).
 ## 📁 Layout
 
 ```
-public/index.html   markup
-public/styles.css   styles
-public/app.js       app logic (map / cards / list, filters, favorites)
-public/data.js      curated Bay Area place data  ← edit this to add places
+public/index.html   THE ENTIRE APP — markup, styles, JS, and the place data, inlined.
 wrangler.toml       Cloudflare Pages config (pages_build_output_dir = "public")
 ```
 
-The deployed artifact is everything in `public/`. There is no `/src`, no `/dist`.
+Everything is inlined into one file on purpose: a single request that can't be
+partially blocked or 404. There is no `/src`, no `/dist`, no separate JS/CSS.
 
 ## ✨ Features
 
@@ -52,7 +50,8 @@ npx wrangler pages dev public
 
 ## ✏️ Add or edit places
 
-All content lives in **`public/data.js`**. Each place:
+All content lives in the `PLACES` array inside **`public/index.html`** (search for
+`const PLACES`). Each place:
 
 ```js
 {
