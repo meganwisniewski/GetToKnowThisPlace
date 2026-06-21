@@ -1,0 +1,21 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: ["claude/youthful-meitner-z6yld7"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ecfbfb77338c37d54ae7fab4b864b841
+          # Direct-upload the static site in public/ to the Pages project.
+          command: pages deploy public --project-name=gettoknowthisplace --branch=main
