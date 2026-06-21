@@ -4,7 +4,9 @@
 //  Hardened so a map/CDN failure never breaks the Cards & List tabs.
 // ============================================================================
 
-const { CATEGORIES, AREAS, PLACES } = window.BAY;
+// Guard against data.js not having loaded — the shell/tabs still work either way.
+const BAY = window.BAY || { CATEGORIES: {}, AREAS: [], PLACES: [] };
+const { CATEGORIES, AREAS, PLACES } = BAY;
 
 const state = {
   search: "",
@@ -263,19 +265,41 @@ function wireEvents() {
 }
 
 // ----------------------------- Boot -----------------------------------------
-function boot() {
-  // Order matters: wire UI + filters FIRST so tabs/cards/list always work,
-  // even if the map library fails to load.
-  try { buildFilterControls(); } catch (e) { console.error("filters failed", e); }
-  try { wireEvents(); }         catch (e) { console.error("events failed", e); }
-  try { initMap(); }            catch (e) {
-    console.error("map init failed", e);
-    const err = document.getElementById("mapError");
-    if (err) err.hidden = false;
-    const m = document.getElementById("map");
-    if (m) m.style.display = "none";
-  }
-  try { render(); }             catch (e) { console.error("render failed", e); }
+function showMapError() {
+  const err = document.getElementById("mapError");
+  if (err) err.hidden = false;
+  const m = document.getElementById("map");
+  if (m) m.style.display = "none";
 }
 
-document.addEventListener("DOMContentLoaded", boot);
+// Init the map only when Leaflet is actually available (it loads async).
+function tryInitMap() {
+  if (mapReady) return;
+  if (typeof L === "undefined") return;
+  try { initMap(); render(); }
+  catch (e) { console.error("map init failed", e); showMapError(); }
+}
+
+function boot() {
+  // Filters + UI first — these never depend on the map library.
+  try { buildFilterControls(); } catch (e) { console.error("filters failed", e); }
+  try { wireEvents(); }          catch (e) { console.error("events failed", e); }
+  try { render(); }              catch (e) { console.error("render failed", e); }
+
+  // The map is optional and loaded asynchronously. Init now if Leaflet is
+  // already here; otherwise let the <script onload> hook trigger it, and show
+  // a friendly notice if the CDN is blocked and it never arrives.
+  if (typeof L !== "undefined") {
+    tryInitMap();
+  } else {
+    window.__onLeaflet = tryInitMap;
+    window.__onLeafletError = showMapError;
+    setTimeout(() => { if (!mapReady) showMapError(); }, 9000);
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}

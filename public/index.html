@@ -110,9 +110,12 @@
     </p>
   </footer>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- App data + logic FIRST, so the page always works even if the map CDN is blocked -->
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <!-- Leaflet map library, loaded async so a blocked/slow CDN can never freeze the app -->
+  <script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          onload="window.__onLeaflet && window.__onLeaflet()"
+          onerror="window.__onLeafletError && window.__onLeafletError()"></script>
 </body>
 </html>
