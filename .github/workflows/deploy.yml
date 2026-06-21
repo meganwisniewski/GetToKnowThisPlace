@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: ["main", "master", "claude/youthful-meitner-z6yld7"]
   workflow_dispatch:
 
 permissions:
@@ -27,6 +27,9 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          # Auto-enable GitHub Pages on first run so no manual toggle is needed
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
