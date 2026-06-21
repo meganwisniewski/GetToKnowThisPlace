@@ -3,70 +3,74 @@
 An interactive guide to exploring the **San Francisco Bay Area** — art museums, galleries,
 movie theaters, parks, botanic gardens, hikes, and event venues, all on one map.
 
-Built as a plain static website (HTML + CSS + vanilla JavaScript), so it runs anywhere
-and deploys for free to GitHub Pages. No build step, no API keys.
+A plain static site (HTML + CSS + vanilla JavaScript) — **no build step, no framework** —
+deployed on **Cloudflare Pages**, Git-connected (push → auto-deploy).
+
+## 📁 Layout
+
+```
+public/index.html   markup
+public/styles.css   styles
+public/app.js       app logic (map / cards / list, filters, favorites)
+public/data.js      curated Bay Area place data  ← edit this to add places
+wrangler.toml       Cloudflare Pages config (pages_build_output_dir = "public")
+```
+
+The deployed artifact is everything in `public/`. There is no `/src`, no `/dist`.
 
 ## ✨ Features
 
-- **🗺️ Interactive map** (first thing you see) — colored pins by category, click for details,
+- **🗺️ Interactive map** (Leaflet + OpenStreetMap) — category-colored pins, popups with
   website links, one-tap directions, and a **"Near me"** button.
-- **🃏 Cards tab** — filterable cards with descriptions, tags, and free/paid badges.
-- **📋 List tab** — a compact, sortable table (click any column header to sort).
-- **Shared filters** across all three views:
-  - Search box (matches names, descriptions, areas, and tags)
-  - Category chips (toggle on/off)
-  - Area dropdown (San Francisco, East Bay, Marin, Peninsula, South Bay)
-  - "Free only" toggle
-  - "⭐ Favorites only" toggle
-- **⭐ Favorites** — saved in your browser (localStorage), so they stick between visits.
+- **🃏 Cards** — filterable cards with descriptions, tags, and free/paid badges.
+- **📋 List** — a compact, sortable table.
+- **Shared filters** across all three views: search, category chips, area dropdown,
+  "Free only," and **⭐ Favorites** (saved in the browser via localStorage).
+- Hardened boot: the Cards/List tabs keep working even if the map library fails to load.
 
-## 🚀 Run it locally
+## 🚀 Deploy (Cloudflare Pages, Git-connected)
 
-It's just static files. Either:
+1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick this repo.
+2. Production branch: `claude/youthful-meitner-z6yld7` (or whatever you set as default).
+3. Build command: **(none)** · Build output directory: **`public`** (auto-read from `wrangler.toml`).
+4. Every push then auto-deploys to `<project>.pages.dev`.
+5. Add a custom domain (e.g. `gettoknowthisplace.dumbbugbaby.com`) in the Pages project →
+   **Custom domains** tab; Cloudflare manages the DNS automatically.
 
-- **Double-click `index.html`**, or
-- Serve it (recommended, avoids browser file restrictions):
-  ```bash
-  python3 -m http.server 8000
-  # then open http://localhost:8000
-  ```
+## 🧪 Run locally
 
-## 🌐 Publish it (free, public website)
+It's just static files:
 
-This repo includes a GitHub Actions workflow that publishes the site to **GitHub Pages**.
+```bash
+# simplest
+python3 -m http.server 8000 --directory public
+# then open http://localhost:8000
 
-1. Push to the default branch.
-2. In your repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Your site goes live at `https://<your-username>.github.io/<repo-name>/`.
+# or, matching the Cloudflare runtime:
+npx wrangler pages dev public
+```
 
 ## ✏️ Add or edit places
 
-All the content lives in **`data.js`**. Each place looks like this:
+All content lives in **`public/data.js`**. Each place:
 
 ```js
 {
   id: "unique-id",
   name: "Place Name",
-  category: "Art Museum",      // must match a key in CATEGORIES
-  area: "San Francisco",        // must match an entry in AREAS
-  lat: 37.7857, lng: -122.4011, // map coordinates
-  description: "Short blurb shown on the card, map popup, etc.",
+  category: "Art Museum",       // must match a key in CATEGORIES
+  area: "San Francisco",         // must match an entry in AREAS
+  lat: 37.7857, lng: -122.4011,
+  description: "Short blurb.",
   address: "123 Example St, San Francisco",
   website: "https://example.com",
-  free: false,                  // true = shows a FREE badge
+  free: false,                   // true = shows a FREE badge
   tags: ["indoor", "rainy day"],
 }
 ```
 
-To add a **new category**, add it to the `CATEGORIES` object at the top of `data.js`
-(give it a color + emoji) and it'll automatically appear as a filter chip and map pin.
-
-## 🛣️ Ideas for later
-
-- Plug in **live events** (Eventbrite, ticketing feeds, city calendars).
-- "Open now" hours, ratings, and photos.
-- Routes / day-trip itineraries by area.
-- Share a filtered view via URL.
+Add a new **category** by adding it to the `CATEGORIES` object at the top of `data.js`
+(color + emoji) — it auto-appears as a filter chip and map pin.
 
 ---
 *Data is curated and approximate — always check the venue's website before you go.*
