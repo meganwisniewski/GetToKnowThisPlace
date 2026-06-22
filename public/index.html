@@ -351,6 +351,23 @@ a { color: var(--accent); }
 
 .empty-msg { text-align: center; color: var(--muted); padding: 56px 20px; font-size: 1rem; }
 
+/* Hours + expandable details (exhibitions / showtimes) */
+.place-hours { margin: 6px 0 0; font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+.place-more { margin: 8px 0 2px; font-size: 0.85rem; }
+.place-more > summary {
+  cursor: pointer; font-weight: 700; color: var(--accent);
+  list-style: none; padding: 6px 0; user-select: none;
+}
+.place-more > summary::-webkit-details-marker { display: none; }
+.place-more > summary::before { content: "▸ "; display: inline-block; transition: transform .15s; }
+.place-more[open] > summary::before { content: "▾ "; }
+.place-more ul { margin: 4px 0 6px; padding-left: 18px; color: var(--ink); }
+.place-more li { margin: 2px 0; }
+.place-more .more-link { display: inline-block; font-weight: 700; font-size: 0.82rem; }
+/* popup variants inherit fine; keep popup text readable */
+.popup .place-hours { color: var(--muted); }
+.popup .place-more ul { color: var(--ink); }
+
 /* ------------------------------- Footer --------------------------------- */
 .site-footer {
   margin-top: 36px;
@@ -563,6 +580,17 @@ const PLACES = [
     website: "https://museumca.org",
     free: false,
     tags: ["california", "family friendly", "gardens", "friday nights"],
+    hours: "Wed–Sun 11am–5pm · Fri 11am–9pm (Friday Nights) · closed Mon–Tue",
+    more: {
+      label: "Exhibitions on view",
+      items: [
+        "Gallery of California Art — permanent collection",
+        "Gallery of California History — permanent collection",
+        "Gallery of California Natural Sciences — permanent collection",
+        "Rotating special exhibitions (changes seasonally)",
+      ],
+      link: { text: "See what's on view now →", url: "https://museumca.org/on-view/" },
+    },
   },
   {
     id: "bampfa",
@@ -723,6 +751,15 @@ const PLACES = [
     website: "https://www.renaissancerialto.com",
     free: false,
     tags: ["historic", "landmark", "organ"],
+    hours: "Doors ~30 min before the first show · matinee to evening daily",
+    more: {
+      label: "Upcoming showtimes",
+      items: [
+        "First-run films screen daily across 4 screens",
+        "Friday nights: live Wurlitzer organ before the evening shows",
+      ],
+      link: { text: "See today's showtimes & tickets →", url: "https://www.renaissancerialto.com/grand-lake-theatre/" },
+    },
   },
   {
     id: "new-parkway",
@@ -1162,6 +1199,20 @@ function makeIcon(category) {
   });
 }
 
+// Hours line + expandable details (exhibitions / showtimes / etc.), shared by map + cards.
+function extraHtml(p) {
+  let h = "";
+  if (p.hours) h += `<p class="place-hours">🕒 ${p.hours}</p>`;
+  if (p.more) {
+    const items = (p.more.items || []).map((i) => `<li>${i}</li>`).join("");
+    const link = p.more.link
+      ? `<a class="more-link" href="${p.more.link.url}" target="_blank" rel="noopener">${p.more.link.text}</a>`
+      : "";
+    h += `<details class="place-more"><summary>${p.more.label}</summary><ul>${items}</ul>${link}</details>`;
+  }
+  return h;
+}
+
 function popupHtml(p) {
   const meta = CATEGORIES[p.category];
   const fav = state.favorites.has(p.id);
@@ -1171,6 +1222,7 @@ function popupHtml(p) {
       <h3>${p.name}</h3>
       <p>${p.description}</p>
       <p>📍 ${p.address}${p.free ? " · 🆓 Free" : ""}</p>
+      ${extraHtml(p)}
       <div class="popup-links">
         <a href="${p.website}" target="_blank" rel="noopener">Website ↗</a>
         <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Directions ↗</a>
@@ -1228,6 +1280,7 @@ function renderCards(places) {
       </div>
       <p class="card-desc">${p.description}</p>
       <div class="card-tags">${(p.tags || []).map((t) => `<span class="tag">${t}</span>`).join("")}</div>
+      ${extraHtml(p)}
       <div class="card-actions">
         <a class="btn" href="${p.website}" target="_blank" rel="noopener">Website ↗</a>
         <a class="btn btn-primary" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Directions ↗</a>
