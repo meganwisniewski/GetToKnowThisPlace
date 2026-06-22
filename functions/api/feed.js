@@ -4,7 +4,7 @@
 
 const VENUES = {
   "grand-lake": {
-    url: "https://www.renaissancerialto.com/grand-lake-theatre/",
+    url: "https://www.renaissancerialto.com/",
     label: "Upcoming showtimes",
     kind: "showtimes",
   },
