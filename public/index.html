@@ -493,22 +493,35 @@ a { color: var(--accent); }
   <!-- App data + logic FIRST, so the page always works even if the map CDN is blocked -->
   <script>
 (function(){
-
-// ============================================================================
-//  Get To Know This Place — curated Bay Area starter data
-//  Each place: id, name, category, area, lat, lng, description, address,
-//  website, free (bool), tags []
-//  Coordinates are approximate (good enough for map pins).
-// ============================================================================
-
 const CATEGORIES = {
-  "Art Museum":      { color: "#e74c3c", icon: "🖼️" },
-  "Gallery":         { color: "#9b59b6", icon: "🎨" },
-  "Movie Theater":   { color: "#f39c12", icon: "🎬" },
-  "Park":            { color: "#27ae60", icon: "🌳" },
-  "Botanic Garden":  { color: "#16a085", icon: "🌺" },
-  "Hike":            { color: "#8b5a2b", icon: "🥾" },
-  "Event Venue":     { color: "#3498db", icon: "🎟️" },
+  "Art Museum": {
+    "color": "#e74c3c",
+    "icon": "🖼️"
+  },
+  "Gallery": {
+    "color": "#9b59b6",
+    "icon": "🎨"
+  },
+  "Movie Theater": {
+    "color": "#f39c12",
+    "icon": "🎬"
+  },
+  "Park": {
+    "color": "#27ae60",
+    "icon": "🌳"
+  },
+  "Botanic Garden": {
+    "color": "#16a085",
+    "icon": "🌺"
+  },
+  "Hike": {
+    "color": "#8b5a2b",
+    "icon": "🥾"
+  },
+  "Event Venue": {
+    "color": "#3498db",
+    "icon": "🎟️"
+  }
 };
 
 const AREAS = [
@@ -516,577 +529,1314 @@ const AREAS = [
   "East Bay",
   "Marin",
   "Peninsula",
-  "South Bay",
+  "South Bay"
 ];
 
 const PLACES = [
-  // ----------------------------- Art Museums -----------------------------
   {
-    id: "sfmoma",
-    name: "SFMOMA",
-    category: "Art Museum",
-    area: "San Francisco",
-    lat: 37.7857, lng: -122.4011,
-    description: "One of the largest modern & contemporary art museums in the U.S. Seven floors plus a free-to-enter ground level and a wonderful living wall.",
-    address: "151 3rd St, San Francisco",
-    website: "https://www.sfmoma.org",
-    free: false,
-    tags: ["modern art", "contemporary", "indoor", "rainy day"],
+    "id": "sfmoma",
+    "name": "SFMOMA",
+    "category": "Art Museum",
+    "area": "San Francisco",
+    "lat": 37.7857,
+    "lng": -122.4011,
+    "description": "One of the largest modern & contemporary art museums in the U.S. Seven floors plus a free-to-enter ground level and a wonderful living wall.",
+    "address": "151 3rd St, San Francisco",
+    "website": "https://www.sfmoma.org",
+    "free": false,
+    "tags": [
+      "modern art",
+      "contemporary",
+      "indoor",
+      "rainy day"
+    ],
+    "hours": "Mon–Tue & Fri–Sun 10am–5pm · Thu 10am–8pm · closed Wed",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Seven floors of modern & contemporary art",
+        "Free ground floor & living wall"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://www.sfmoma.org/exhibitions/"
+      }
+    }
   },
   {
-    id: "deyoung",
-    name: "de Young Museum",
-    category: "Art Museum",
-    area: "San Francisco",
-    lat: 37.7715, lng: -122.4686,
-    description: "Fine arts museum in Golden Gate Park with a free observation tower offering 360° city views.",
-    address: "50 Hagiwara Tea Garden Dr, San Francisco",
-    website: "https://www.famsf.org/visit/de-young",
-    free: false,
-    tags: ["american art", "tower", "golden gate park", "views"],
+    "id": "deyoung",
+    "name": "de Young Museum",
+    "category": "Art Museum",
+    "area": "San Francisco",
+    "lat": 37.7715,
+    "lng": -122.4686,
+    "description": "Fine arts museum in Golden Gate Park with a free observation tower offering 360° city views.",
+    "address": "50 Hagiwara Tea Garden Dr, San Francisco",
+    "website": "https://www.famsf.org/visit/de-young",
+    "free": false,
+    "tags": [
+      "american art",
+      "tower",
+      "golden gate park",
+      "views"
+    ],
+    "hours": "Tue–Sun 9:30am–5:15pm · closed Mon",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "American, Oceanic & African art",
+        "Free observation tower with city views"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://www.famsf.org/calendar"
+      }
+    }
   },
   {
-    id: "legion-of-honor",
-    name: "Legion of Honor",
-    category: "Art Museum",
-    area: "San Francisco",
-    lat: 37.7841, lng: -122.5008,
-    description: "European art in a stunning neoclassical building overlooking the Golden Gate. A Rodin 'Thinker' greets you in the courtyard.",
-    address: "100 34th Ave, San Francisco",
-    website: "https://www.famsf.org/visit/legion-of-honor",
-    free: false,
-    tags: ["european art", "ocean views", "architecture"],
+    "id": "legion-of-honor",
+    "name": "Legion of Honor",
+    "category": "Art Museum",
+    "area": "San Francisco",
+    "lat": 37.7841,
+    "lng": -122.5008,
+    "description": "European art in a stunning neoclassical building overlooking the Golden Gate. A Rodin 'Thinker' greets you in the courtyard.",
+    "address": "100 34th Ave, San Francisco",
+    "website": "https://www.famsf.org/visit/legion-of-honor",
+    "free": false,
+    "tags": [
+      "european art",
+      "ocean views",
+      "architecture"
+    ],
+    "hours": "Tue–Sun 9:30am–5:15pm · closed Mon",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "European art across the centuries",
+        "Rodin's 'The Thinker' in the courtyard"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://www.famsf.org/calendar"
+      }
+    }
   },
   {
-    id: "asian-art-museum",
-    name: "Asian Art Museum",
-    category: "Art Museum",
-    area: "San Francisco",
-    lat: 37.7803, lng: -122.4163,
-    description: "One of the largest collections of Asian art in the world, spanning 6,000 years and dozens of cultures.",
-    address: "200 Larkin St, San Francisco",
-    website: "https://asianart.org",
-    free: false,
-    tags: ["asian art", "indoor", "rainy day"],
+    "id": "asian-art-museum",
+    "name": "Asian Art Museum",
+    "category": "Art Museum",
+    "area": "San Francisco",
+    "lat": 37.7803,
+    "lng": -122.4163,
+    "description": "One of the largest collections of Asian art in the world, spanning 6,000 years and dozens of cultures.",
+    "address": "200 Larkin St, San Francisco",
+    "website": "https://asianart.org",
+    "free": false,
+    "tags": [
+      "asian art",
+      "indoor",
+      "rainy day"
+    ],
+    "hours": "Thu–Mon 10am–5pm · closed Tue–Wed",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "6,000 years of Asian art",
+        "Rotating special exhibitions"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://asianart.org/exhibitions/"
+      }
+    }
   },
   {
-    id: "omca",
-    name: "Oakland Museum of California",
-    category: "Art Museum",
-    area: "East Bay",
-    lat: 37.7975, lng: -122.2640,
-    description: "Art, history & natural science of California under one roof, with lively Friday Nights @ OMCA food + music events.",
-    address: "1000 Oak St, Oakland",
-    website: "https://museumca.org",
-    free: false,
-    tags: ["california", "family friendly", "gardens", "friday nights"],
-    hours: "Wed–Sun 11am–5pm · Fri 11am–9pm (Friday Nights) · closed Mon–Tue",
-    more: {
-      label: "Exhibitions on view",
-      items: [
+    "id": "omca",
+    "name": "Oakland Museum of California",
+    "category": "Art Museum",
+    "area": "East Bay",
+    "lat": 37.7975,
+    "lng": -122.264,
+    "description": "Art, history & natural science of California under one roof, with lively Friday Nights @ OMCA food + music events.",
+    "address": "1000 Oak St, Oakland",
+    "website": "https://museumca.org",
+    "free": false,
+    "tags": [
+      "california",
+      "family friendly",
+      "gardens",
+      "friday nights"
+    ],
+    "hours": "Wed–Sun 11am–5pm · Fri 11am–9pm (Friday Nights) · closed Mon–Tue",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
         "Gallery of California Art — permanent collection",
         "Gallery of California History — permanent collection",
         "Gallery of California Natural Sciences — permanent collection",
-        "Rotating special exhibitions (changes seasonally)",
+        "Rotating special exhibitions (changes seasonally)"
       ],
-      link: { text: "See what's on view now →", url: "https://museumca.org/on-view/" },
-    },
+      "link": {
+        "text": "See what's on view now →",
+        "url": "https://museumca.org/on-view/"
+      }
+    }
   },
   {
-    id: "bampfa",
-    name: "BAMPFA (Berkeley Art Museum & Pacific Film Archive)",
-    category: "Art Museum",
-    area: "East Bay",
-    lat: 37.8694, lng: -122.2596,
-    description: "Contemporary art museum and renowned film archive in one. Doubles as one of the best repertory cinemas in the region.",
-    address: "2155 Center St, Berkeley",
-    website: "https://bampfa.org",
-    free: false,
-    tags: ["contemporary", "film", "university"],
+    "id": "bampfa",
+    "name": "BAMPFA (Berkeley Art Museum & Pacific Film Archive)",
+    "category": "Art Museum",
+    "area": "East Bay",
+    "lat": 37.8694,
+    "lng": -122.2596,
+    "description": "Contemporary art museum and renowned film archive in one. Doubles as one of the best repertory cinemas in the region.",
+    "address": "2155 Center St, Berkeley",
+    "website": "https://bampfa.org",
+    "free": false,
+    "tags": [
+      "contemporary",
+      "film",
+      "university"
+    ],
+    "hours": "Wed–Sun 11am–7pm · closed Mon–Tue",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Contemporary art galleries",
+        "Repertory film screenings in-house"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://bampfa.org/calendar"
+      }
+    }
   },
   {
-    id: "cantor",
-    name: "Cantor Arts Center (Stanford)",
-    category: "Art Museum",
-    area: "Peninsula",
-    lat: 37.4322, lng: -122.1701,
-    description: "Free university art museum with the largest Rodin collection outside Paris, plus an outdoor sculpture garden.",
-    address: "328 Lomita Dr, Stanford",
-    website: "https://museum.stanford.edu",
-    free: true,
-    tags: ["free", "rodin", "sculpture garden", "university"],
+    "id": "cantor",
+    "name": "Cantor Arts Center (Stanford)",
+    "category": "Art Museum",
+    "area": "Peninsula",
+    "lat": 37.4322,
+    "lng": -122.1701,
+    "description": "Free university art museum with the largest Rodin collection outside Paris, plus an outdoor sculpture garden.",
+    "address": "328 Lomita Dr, Stanford",
+    "website": "https://museum.stanford.edu",
+    "free": true,
+    "tags": [
+      "free",
+      "rodin",
+      "sculpture garden",
+      "university"
+    ],
+    "hours": "Wed–Sun 11am–5pm · closed Mon–Tue · free",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Largest Rodin collection outside Paris",
+        "Outdoor sculpture garden"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://museum.stanford.edu/exhibitions"
+      }
+    }
   },
   {
-    id: "sjma",
-    name: "San José Museum of Art",
-    category: "Art Museum",
-    area: "South Bay",
-    lat: 37.3329, lng: -121.8896,
-    description: "Modern & contemporary art focused on the West Coast and new media, in downtown San José.",
-    address: "110 S Market St, San José",
-    website: "https://sjmusart.org",
-    free: false,
-    tags: ["contemporary", "new media", "downtown"],
-  },
-
-  // ------------------------------- Galleries ------------------------------
-  {
-    id: "minnesota-street",
-    name: "Minnesota Street Project",
-    category: "Gallery",
-    area: "San Francisco",
-    lat: 37.7553, lng: -122.3990,
-    description: "A hub of contemporary art galleries and artist studios under one roof in the Dogpatch. Free to wander.",
-    address: "1275 Minnesota St, San Francisco",
-    website: "https://minnesotastreetproject.com",
-    free: true,
-    tags: ["free", "contemporary", "dogpatch", "multiple galleries"],
-  },
-  {
-    id: "fraenkel",
-    name: "Fraenkel Gallery",
-    category: "Gallery",
-    area: "San Francisco",
-    lat: 37.7895, lng: -122.4045,
-    description: "Internationally renowned photography gallery in the Union Square gallery district.",
-    address: "49 Geary St, San Francisco",
-    website: "https://fraenkelgallery.com",
-    free: true,
-    tags: ["free", "photography", "union square"],
+    "id": "sjma",
+    "name": "San José Museum of Art",
+    "category": "Art Museum",
+    "area": "South Bay",
+    "lat": 37.3329,
+    "lng": -121.8896,
+    "description": "Modern & contemporary art focused on the West Coast and new media, in downtown San José.",
+    "address": "110 S Market St, San José",
+    "website": "https://sjmusart.org",
+    "free": false,
+    "tags": [
+      "contemporary",
+      "new media",
+      "downtown"
+    ],
+    "hours": "Thu–Sun 11am–5pm",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Modern & contemporary West Coast art",
+        "New-media installations"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://sjmusart.org/exhibitions/"
+      }
+    }
   },
   {
-    id: "creativity-explored",
-    name: "Creativity Explored",
-    category: "Gallery",
-    area: "San Francisco",
-    lat: 37.7510, lng: -122.4196,
-    description: "Nonprofit studio and gallery showcasing artists with developmental disabilities. Bright, joyful, and free.",
-    address: "3245 16th St, San Francisco",
-    website: "https://www.creativityexplored.org",
-    free: true,
-    tags: ["free", "nonprofit", "mission"],
+    "id": "minnesota-street",
+    "name": "Minnesota Street Project",
+    "category": "Gallery",
+    "area": "San Francisco",
+    "lat": 37.7553,
+    "lng": -122.399,
+    "description": "A hub of contemporary art galleries and artist studios under one roof in the Dogpatch. Free to wander.",
+    "address": "1275 Minnesota St, San Francisco",
+    "website": "https://minnesotastreetproject.com",
+    "free": true,
+    "tags": [
+      "free",
+      "contemporary",
+      "dogpatch",
+      "multiple galleries"
+    ],
+    "hours": "Tue–Sat 11am–5pm (gallery hours vary) · free",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Many contemporary galleries under one roof",
+        "Artist studios on site"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://minnesotastreetproject.com"
+      }
+    }
   },
   {
-    id: "catharine-clark",
-    name: "Catharine Clark Gallery",
-    category: "Gallery",
-    area: "San Francisco",
-    lat: 37.7556, lng: -122.3992,
-    description: "Contemporary gallery known for new-media and politically engaged work, located in the Minnesota Street Project complex.",
-    address: "1275 Minnesota St, San Francisco",
-    website: "https://cclarkgallery.com",
-    free: true,
-    tags: ["free", "contemporary", "dogpatch"],
+    "id": "fraenkel",
+    "name": "Fraenkel Gallery",
+    "category": "Gallery",
+    "area": "San Francisco",
+    "lat": 37.7895,
+    "lng": -122.4045,
+    "description": "Internationally renowned photography gallery in the Union Square gallery district.",
+    "address": "49 Geary St, San Francisco",
+    "website": "https://fraenkelgallery.com",
+    "free": true,
+    "tags": [
+      "free",
+      "photography",
+      "union square"
+    ],
+    "hours": "Tue–Fri 10:30am–5:30pm · Sat 11am–5pm · free",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Renowned photography exhibitions"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://fraenkelgallery.com/exhibitions"
+      }
+    }
   },
   {
-    id: "k-imperial",
-    name: "K. Imperial Fine Art",
-    category: "Gallery",
-    area: "San Francisco",
-    lat: 37.7896, lng: -122.4043,
-    description: "Contemporary fine art gallery in the heart of the downtown gallery walk on Geary Street.",
-    address: "49 Geary St, San Francisco",
-    website: "https://kimperialfineart.com",
-    free: true,
-    tags: ["free", "contemporary", "union square"],
-  },
-
-  // ----------------------------- Movie Theaters ---------------------------
-  {
-    id: "castro-theatre",
-    name: "Castro Theatre",
-    category: "Movie Theater",
-    area: "San Francisco",
-    lat: 37.7620, lng: -122.4348,
-    description: "Iconic 1922 movie palace famous for classic film screenings, sing-alongs, and a live Wurlitzer organ.",
-    address: "429 Castro St, San Francisco",
-    website: "https://www.castrotheatre.com",
-    free: false,
-    tags: ["historic", "repertory", "landmark"],
-  },
-  {
-    id: "roxie",
-    name: "Roxie Theater",
-    category: "Movie Theater",
-    area: "San Francisco",
-    lat: 37.7649, lng: -122.4221,
-    description: "Nonprofit indie cinema (since 1909) showing documentaries, foreign films, and cult classics in the Mission.",
-    address: "3117 16th St, San Francisco",
-    website: "https://roxie.com",
-    free: false,
-    tags: ["indie", "documentary", "nonprofit", "mission"],
+    "id": "creativity-explored",
+    "name": "Creativity Explored",
+    "category": "Gallery",
+    "area": "San Francisco",
+    "lat": 37.751,
+    "lng": -122.4196,
+    "description": "Nonprofit studio and gallery showcasing artists with developmental disabilities. Bright, joyful, and free.",
+    "address": "3245 16th St, San Francisco",
+    "website": "https://www.creativityexplored.org",
+    "free": true,
+    "tags": [
+      "free",
+      "nonprofit",
+      "mission"
+    ],
+    "hours": "Mon–Fri 10am–5pm (weekends vary) · free",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Art by artists with developmental disabilities",
+        "Always free"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://www.creativityexplored.org/exhibitions"
+      }
+    }
   },
   {
-    id: "alamo-new-mission",
-    name: "Alamo Drafthouse New Mission",
-    category: "Movie Theater",
-    area: "San Francisco",
-    lat: 37.7565, lng: -122.4189,
-    description: "Restored 1916 theater where you can order food & drinks to your seat. Great special events and themed screenings.",
-    address: "2550 Mission St, San Francisco",
-    website: "https://drafthouse.com/sf",
-    free: false,
-    tags: ["dine-in", "events", "mission"],
+    "id": "catharine-clark",
+    "name": "Catharine Clark Gallery",
+    "category": "Gallery",
+    "area": "San Francisco",
+    "lat": 37.7556,
+    "lng": -122.3992,
+    "description": "Contemporary gallery known for new-media and politically engaged work, located in the Minnesota Street Project complex.",
+    "address": "1275 Minnesota St, San Francisco",
+    "website": "https://cclarkgallery.com",
+    "free": true,
+    "tags": [
+      "free",
+      "contemporary",
+      "dogpatch"
+    ],
+    "hours": "Tue–Sat 11am–6pm · free",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Contemporary & new-media exhibitions"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://cclarkgallery.com/exhibitions/"
+      }
+    }
   },
   {
-    id: "balboa",
-    name: "Balboa Theatre",
-    category: "Movie Theater",
-    area: "San Francisco",
-    lat: 37.7773, lng: -122.4988,
-    description: "Charming 1926 neighborhood double-feature house in the Outer Richmond.",
-    address: "3630 Balboa St, San Francisco",
-    website: "https://www.balboamovies.com",
-    free: false,
-    tags: ["historic", "neighborhood", "richmond"],
+    "id": "k-imperial",
+    "name": "K. Imperial Fine Art",
+    "category": "Gallery",
+    "area": "San Francisco",
+    "lat": 37.7896,
+    "lng": -122.4043,
+    "description": "Contemporary fine art gallery in the heart of the downtown gallery walk on Geary Street.",
+    "address": "49 Geary St, San Francisco",
+    "website": "https://kimperialfineart.com",
+    "free": true,
+    "tags": [
+      "free",
+      "contemporary",
+      "union square"
+    ],
+    "hours": "Tue–Sat 11am–6pm · free",
+    "more": {
+      "label": "Exhibitions on view",
+      "items": [
+        "Rotating contemporary exhibitions"
+      ],
+      "link": {
+        "text": "See exhibitions →",
+        "url": "https://kimperialfineart.com"
+      }
+    }
   },
   {
-    id: "grand-lake",
-    name: "Grand Lake Theatre",
-    category: "Movie Theater",
-    area: "East Bay",
-    lat: 37.8108, lng: -122.2469,
-    description: "Beloved 1926 Oakland landmark with a glowing marquee, Friday-night organ, and a mix of new and classic films.",
-    address: "3200 Grand Ave, Oakland",
-    website: "https://www.renaissancerialto.com",
-    free: false,
-    tags: ["historic", "landmark", "organ"],
-    hours: "Doors ~30 min before the first show · matinee to evening daily",
-    more: {
-      label: "Upcoming showtimes",
-      items: [
+    "id": "castro-theatre",
+    "name": "Castro Theatre",
+    "category": "Movie Theater",
+    "area": "San Francisco",
+    "lat": 37.762,
+    "lng": -122.4348,
+    "description": "Iconic 1922 movie palace famous for classic film screenings, sing-alongs, and a live Wurlitzer organ.",
+    "address": "429 Castro St, San Francisco",
+    "website": "https://www.castrotheatre.com",
+    "free": false,
+    "tags": [
+      "historic",
+      "repertory",
+      "landmark"
+    ],
+    "hours": "Showtimes vary by event · historic 1922 palace",
+    "more": {
+      "label": "Upcoming showtimes",
+      "items": [
+        "Classic films, sing-alongs & events",
+        "Live Wurlitzer organ at select shows"
+      ],
+      "link": {
+        "text": "See showtimes & tickets →",
+        "url": "https://www.castrotheatre.com"
+      }
+    }
+  },
+  {
+    "id": "roxie",
+    "name": "Roxie Theater",
+    "category": "Movie Theater",
+    "area": "San Francisco",
+    "lat": 37.7649,
+    "lng": -122.4221,
+    "description": "Nonprofit indie cinema (since 1909) showing documentaries, foreign films, and cult classics in the Mission.",
+    "address": "3117 16th St, San Francisco",
+    "website": "https://roxie.com",
+    "free": false,
+    "tags": [
+      "indie",
+      "documentary",
+      "nonprofit",
+      "mission"
+    ],
+    "hours": "Open daily · showtimes vary",
+    "more": {
+      "label": "Upcoming showtimes",
+      "items": [
+        "Indie, documentary & cult screenings"
+      ],
+      "link": {
+        "text": "See showtimes & tickets →",
+        "url": "https://roxie.com/calendar/"
+      }
+    }
+  },
+  {
+    "id": "alamo-new-mission",
+    "name": "Alamo Drafthouse New Mission",
+    "category": "Movie Theater",
+    "area": "San Francisco",
+    "lat": 37.7565,
+    "lng": -122.4189,
+    "description": "Restored 1916 theater where you can order food & drinks to your seat. Great special events and themed screenings.",
+    "address": "2550 Mission St, San Francisco",
+    "website": "https://drafthouse.com/sf",
+    "free": false,
+    "tags": [
+      "dine-in",
+      "events",
+      "mission"
+    ],
+    "hours": "Open daily · showtimes vary",
+    "more": {
+      "label": "Upcoming showtimes",
+      "items": [
+        "Food & drinks to your seat",
+        "Themed & special-event screenings"
+      ],
+      "link": {
+        "text": "See showtimes & tickets →",
+        "url": "https://drafthouse.com/sf/theater/new-mission"
+      }
+    }
+  },
+  {
+    "id": "balboa",
+    "name": "Balboa Theatre",
+    "category": "Movie Theater",
+    "area": "San Francisco",
+    "lat": 37.7773,
+    "lng": -122.4988,
+    "description": "Charming 1926 neighborhood double-feature house in the Outer Richmond.",
+    "address": "3630 Balboa St, San Francisco",
+    "website": "https://www.balboamovies.com",
+    "free": false,
+    "tags": [
+      "historic",
+      "neighborhood",
+      "richmond"
+    ],
+    "hours": "Open daily · double features",
+    "more": {
+      "label": "Upcoming showtimes",
+      "items": [
+        "Charming neighborhood double features"
+      ],
+      "link": {
+        "text": "See showtimes & tickets →",
+        "url": "https://www.balboamovies.com"
+      }
+    }
+  },
+  {
+    "id": "grand-lake",
+    "name": "Grand Lake Theatre",
+    "category": "Movie Theater",
+    "area": "East Bay",
+    "lat": 37.8108,
+    "lng": -122.2469,
+    "description": "Beloved 1926 Oakland landmark with a glowing marquee, Friday-night organ, and a mix of new and classic films.",
+    "address": "3200 Grand Ave, Oakland",
+    "website": "https://www.renaissancerialto.com",
+    "free": false,
+    "tags": [
+      "historic",
+      "landmark",
+      "organ"
+    ],
+    "hours": "Doors ~30 min before the first show · matinee to evening daily",
+    "more": {
+      "label": "Upcoming showtimes",
+      "items": [
         "First-run films screen daily across 4 screens",
-        "Friday nights: live Wurlitzer organ before the evening shows",
+        "Friday nights: live Wurlitzer organ before the evening shows"
       ],
-      link: { text: "See today's showtimes & tickets →", url: "https://www.renaissancerialto.com/grand-lake-theatre/" },
-    },
+      "link": {
+        "text": "See today's showtimes & tickets →",
+        "url": "https://www.renaissancerialto.com/grand-lake-theatre/"
+      }
+    }
   },
   {
-    id: "new-parkway",
-    name: "The New Parkway Theater",
-    category: "Movie Theater",
-    area: "East Bay",
-    lat: 37.8079, lng: -122.2680,
-    description: "Cozy Oakland cinema-pub with couches, food, beer, trivia nights, and second-run films.",
-    address: "474 24th St, Oakland",
-    website: "https://www.thenewparkway.com",
-    free: false,
-    tags: ["couches", "dine-in", "trivia", "second-run"],
-  },
-
-  // -------------------------------- Parks ---------------------------------
-  {
-    id: "golden-gate-park",
-    name: "Golden Gate Park",
-    category: "Park",
-    area: "San Francisco",
-    lat: 37.7694, lng: -122.4862,
-    description: "1,000+ acres of gardens, lakes, museums, bison, and windmills stretching to the ocean. A whole day's worth of exploring.",
-    address: "Golden Gate Park, San Francisco",
-    website: "https://sfrecpark.org/770/Golden-Gate-Park",
-    free: true,
-    tags: ["free", "huge", "gardens", "family friendly", "picnic"],
-  },
-  {
-    id: "dolores-park",
-    name: "Mission Dolores Park",
-    category: "Park",
-    area: "San Francisco",
-    lat: 37.7596, lng: -122.4269,
-    description: "Sunny hillside park with skyline views — the city's favorite spot to picnic and people-watch on a warm day.",
-    address: "Dolores St & 19th St, San Francisco",
-    website: "https://sfrecpark.org/853/Mission-Dolores-Park",
-    free: true,
-    tags: ["free", "views", "picnic", "sunny", "mission"],
+    "id": "new-parkway",
+    "name": "The New Parkway Theater",
+    "category": "Movie Theater",
+    "area": "East Bay",
+    "lat": 37.8079,
+    "lng": -122.268,
+    "description": "Cozy Oakland cinema-pub with couches, food, beer, trivia nights, and second-run films.",
+    "address": "474 24th St, Oakland",
+    "website": "https://www.thenewparkway.com",
+    "free": false,
+    "tags": [
+      "couches",
+      "dine-in",
+      "trivia",
+      "second-run"
+    ],
+    "hours": "Open daily · showtimes vary",
+    "more": {
+      "label": "Upcoming showtimes",
+      "items": [
+        "Couches, food & beer",
+        "Trivia nights & second-run films"
+      ],
+      "link": {
+        "text": "See showtimes & tickets →",
+        "url": "https://www.thenewparkway.com/showtimes"
+      }
+    }
   },
   {
-    id: "presidio",
-    name: "Presidio of San Francisco",
-    category: "Park",
-    area: "San Francisco",
-    lat: 37.7989, lng: -122.4662,
-    description: "A national park site with forests, trails, beaches, the Tunnel Tops park, and Golden Gate Bridge overlooks.",
-    address: "Presidio, San Francisco",
-    website: "https://www.presidio.gov",
-    free: true,
-    tags: ["free", "national park", "trails", "bridge views"],
+    "id": "golden-gate-park",
+    "name": "Golden Gate Park",
+    "category": "Park",
+    "area": "San Francisco",
+    "lat": 37.7694,
+    "lng": -122.4862,
+    "description": "1,000+ acres of gardens, lakes, museums, bison, and windmills stretching to the ocean. A whole day's worth of exploring.",
+    "address": "Golden Gate Park, San Francisco",
+    "website": "https://sfrecpark.org/770/Golden-Gate-Park",
+    "free": true,
+    "tags": [
+      "free",
+      "huge",
+      "gardens",
+      "family friendly",
+      "picnic"
+    ],
+    "hours": "Open daily, 5am–midnight · free",
+    "more": {
+      "label": "Things to do",
+      "items": [
+        "Gardens, lakes, museums & bison",
+        "Car-free JFK Promenade"
+      ],
+      "link": {
+        "text": "Park info →",
+        "url": "https://sfrecpark.org/770/Golden-Gate-Park"
+      }
+    }
   },
   {
-    id: "crissy-field",
-    name: "Crissy Field",
-    category: "Park",
-    area: "San Francisco",
-    lat: 37.8039, lng: -122.4647,
-    description: "Flat waterfront promenade with unbeatable Golden Gate Bridge views — perfect for a stroll, run, or picnic.",
-    address: "1199 East Beach, San Francisco",
-    website: "https://www.parksconservancy.org/parks/crissy-field",
-    free: true,
-    tags: ["free", "waterfront", "bridge views", "walking"],
+    "id": "dolores-park",
+    "name": "Mission Dolores Park",
+    "category": "Park",
+    "area": "San Francisco",
+    "lat": 37.7596,
+    "lng": -122.4269,
+    "description": "Sunny hillside park with skyline views — the city's favorite spot to picnic and people-watch on a warm day.",
+    "address": "Dolores St & 19th St, San Francisco",
+    "website": "https://sfrecpark.org/853/Mission-Dolores-Park",
+    "free": true,
+    "tags": [
+      "free",
+      "views",
+      "picnic",
+      "sunny",
+      "mission"
+    ],
+    "hours": "Open daily, 6am–10pm · free",
+    "more": {
+      "label": "Things to do",
+      "items": [
+        "Sunny hillside with skyline views",
+        "Great for picnics & people-watching"
+      ],
+      "link": {
+        "text": "Park info →",
+        "url": "https://sfrecpark.org/853/Mission-Dolores-Park"
+      }
+    }
   },
   {
-    id: "lake-merritt",
-    name: "Lake Merritt",
-    category: "Park",
-    area: "East Bay",
-    lat: 37.8044, lng: -122.2581,
-    description: "A tidal lagoon ringed by a 3.4-mile path, gardens, a bird sanctuary, and a necklace of lights at night.",
-    address: "Lake Merritt, Oakland",
-    website: "https://www.oaklandca.gov/topics/lake-merritt",
-    free: true,
-    tags: ["free", "walking loop", "birds", "downtown oakland"],
+    "id": "presidio",
+    "name": "Presidio of San Francisco",
+    "category": "Park",
+    "area": "San Francisco",
+    "lat": 37.7989,
+    "lng": -122.4662,
+    "description": "A national park site with forests, trails, beaches, the Tunnel Tops park, and Golden Gate Bridge overlooks.",
+    "address": "Presidio, San Francisco",
+    "website": "https://www.presidio.gov",
+    "free": true,
+    "tags": [
+      "free",
+      "national park",
+      "trails",
+      "bridge views"
+    ],
+    "hours": "Park open daily · visitor center hours vary · free",
+    "more": {
+      "label": "Things to do",
+      "items": [
+        "Tunnel Tops park & beaches",
+        "Forests & Golden Gate Bridge overlooks"
+      ],
+      "link": {
+        "text": "Park info →",
+        "url": "https://www.presidio.gov"
+      }
+    }
   },
   {
-    id: "tilden",
-    name: "Tilden Regional Park",
-    category: "Park",
-    area: "East Bay",
-    lat: 37.8983, lng: -122.2447,
-    description: "Sprawling Berkeley hills park with a botanic garden, steam train, carousel, lake swimming, and miles of trails.",
-    address: "Tilden Regional Park, Berkeley",
-    website: "https://www.ebparks.org/parks/tilden",
-    free: true,
-    tags: ["free", "family friendly", "trails", "swimming", "trains"],
-  },
-
-  // ---------------------------- Botanic Gardens ---------------------------
-  {
-    id: "sf-botanical",
-    name: "San Francisco Botanical Garden",
-    category: "Botanic Garden",
-    area: "San Francisco",
-    lat: 37.7676, lng: -122.4690,
-    description: "55 acres and 8,000+ plant species inside Golden Gate Park, with a magnificent magnolia collection in late winter.",
-    address: "1199 9th Ave, San Francisco",
-    website: "https://www.sfbg.org",
-    free: false,
-    tags: ["golden gate park", "magnolias", "peaceful"],
-  },
-  {
-    id: "conservatory-flowers",
-    name: "Conservatory of Flowers",
-    category: "Botanic Garden",
-    area: "San Francisco",
-    lat: 37.7723, lng: -122.4602,
-    description: "A striking white Victorian glasshouse (1879) filled with tropical plants, orchids, and carnivorous oddities.",
-    address: "100 John F Kennedy Dr, San Francisco",
-    website: "https://conservatoryofflowers.org",
-    free: false,
-    tags: ["historic", "tropical", "glasshouse", "golden gate park"],
+    "id": "crissy-field",
+    "name": "Crissy Field",
+    "category": "Park",
+    "area": "San Francisco",
+    "lat": 37.8039,
+    "lng": -122.4647,
+    "description": "Flat waterfront promenade with unbeatable Golden Gate Bridge views — perfect for a stroll, run, or picnic.",
+    "address": "1199 East Beach, San Francisco",
+    "website": "https://www.parksconservancy.org/parks/crissy-field",
+    "free": true,
+    "tags": [
+      "free",
+      "waterfront",
+      "bridge views",
+      "walking"
+    ],
+    "hours": "Open daily, sunrise–sunset · free",
+    "more": {
+      "label": "Things to do",
+      "items": [
+        "Flat waterfront promenade",
+        "Unbeatable bridge views"
+      ],
+      "link": {
+        "text": "Park info →",
+        "url": "https://www.parksconservancy.org/parks/crissy-field"
+      }
+    }
   },
   {
-    id: "japanese-tea-garden",
-    name: "Japanese Tea Garden",
-    category: "Botanic Garden",
-    area: "San Francisco",
-    lat: 37.7702, lng: -122.4703,
-    description: "The oldest public Japanese garden in the U.S. — pagodas, koi ponds, a moon bridge, and a tea house. Free before 10am certain days.",
-    address: "75 Hagiwara Tea Garden Dr, San Francisco",
-    website: "https://japaneseteagardensf.com",
-    free: false,
-    tags: ["japanese garden", "koi", "tea", "golden gate park"],
+    "id": "lake-merritt",
+    "name": "Lake Merritt",
+    "category": "Park",
+    "area": "East Bay",
+    "lat": 37.8044,
+    "lng": -122.2581,
+    "description": "A tidal lagoon ringed by a 3.4-mile path, gardens, a bird sanctuary, and a necklace of lights at night.",
+    "address": "Lake Merritt, Oakland",
+    "website": "https://www.oaklandca.gov/topics/lake-merritt",
+    "free": true,
+    "tags": [
+      "free",
+      "walking loop",
+      "birds",
+      "downtown oakland"
+    ],
+    "hours": "Open daily · free",
+    "more": {
+      "label": "Things to do",
+      "items": [
+        "3.4-mile loop path",
+        "Bird sanctuary & gardens"
+      ],
+      "link": {
+        "text": "Park info →",
+        "url": "https://www.oaklandca.gov/topics/lake-merritt"
+      }
+    }
   },
   {
-    id: "uc-botanical",
-    name: "UC Botanical Garden at Berkeley",
-    category: "Botanic Garden",
-    area: "East Bay",
-    lat: 37.8757, lng: -122.2386,
-    description: "34 acres in Strawberry Canyon with 10,000+ plant types from around the world and great bay views.",
-    address: "200 Centennial Dr, Berkeley",
-    website: "https://botanicalgarden.berkeley.edu",
-    free: false,
-    tags: ["diverse plants", "bay views", "hillside"],
+    "id": "tilden",
+    "name": "Tilden Regional Park",
+    "category": "Park",
+    "area": "East Bay",
+    "lat": 37.8983,
+    "lng": -122.2447,
+    "description": "Sprawling Berkeley hills park with a botanic garden, steam train, carousel, lake swimming, and miles of trails.",
+    "address": "Tilden Regional Park, Berkeley",
+    "website": "https://www.ebparks.org/parks/tilden",
+    "free": true,
+    "tags": [
+      "free",
+      "family friendly",
+      "trails",
+      "swimming",
+      "trains"
+    ],
+    "hours": "Open daily, 5am–10pm · free",
+    "more": {
+      "label": "Things to do",
+      "items": [
+        "Botanic garden, steam train & carousel",
+        "Lake Anza swimming in summer"
+      ],
+      "link": {
+        "text": "Park info →",
+        "url": "https://www.ebparks.org/parks/tilden"
+      }
+    }
   },
   {
-    id: "ruth-bancroft",
-    name: "Ruth Bancroft Garden",
-    category: "Botanic Garden",
-    area: "East Bay",
-    lat: 37.9101, lng: -122.0652,
-    description: "A renowned dry garden of succulents and cacti in Walnut Creek — a pioneer of water-wise landscaping.",
-    address: "1552 Bancroft Rd, Walnut Creek",
-    website: "https://www.ruthbancroftgarden.org",
-    free: false,
-    tags: ["succulents", "cacti", "drought tolerant"],
+    "id": "sf-botanical",
+    "name": "San Francisco Botanical Garden",
+    "category": "Botanic Garden",
+    "area": "San Francisco",
+    "lat": 37.7676,
+    "lng": -122.469,
+    "description": "55 acres and 8,000+ plant species inside Golden Gate Park, with a magnificent magnolia collection in late winter.",
+    "address": "1199 9th Ave, San Francisco",
+    "website": "https://www.sfbg.org",
+    "free": false,
+    "tags": [
+      "golden gate park",
+      "magnolias",
+      "peaceful"
+    ],
+    "hours": "Daily 7:30am–6pm (last entry 5pm)",
+    "more": {
+      "label": "Highlights & blooms",
+      "items": [
+        "8,000+ plant species",
+        "Magnolias bloom in late winter"
+      ],
+      "link": {
+        "text": "Visitor info →",
+        "url": "https://www.sfbg.org"
+      }
+    }
   },
   {
-    id: "filoli",
-    name: "Filoli Historic House & Garden",
-    category: "Botanic Garden",
-    area: "Peninsula",
-    lat: 37.4709, lng: -122.3127,
-    description: "A grand 1917 country estate in Woodside with 16 acres of formal English gardens and seasonal blooms.",
-    address: "86 Cañada Rd, Woodside",
-    website: "https://filoli.org",
-    free: false,
-    tags: ["historic estate", "formal gardens", "seasonal blooms"],
-  },
-
-  // -------------------------------- Hikes ---------------------------------
-  {
-    id: "lands-end",
-    name: "Lands End Trail",
-    category: "Hike",
-    area: "San Francisco",
-    lat: 37.7800, lng: -122.5119,
-    description: "Dramatic coastal cliff trail with Golden Gate views, shipwreck spotting, a labyrinth, and the Sutro Baths ruins.",
-    address: "680 Point Lobos Ave, San Francisco",
-    website: "https://www.nps.gov/goga/planyourvisit/landsend.htm",
-    free: true,
-    tags: ["free", "coastal", "easy", "views", "ruins"],
-  },
-  {
-    id: "twin-peaks",
-    name: "Twin Peaks",
-    category: "Hike",
-    area: "San Francisco",
-    lat: 37.7544, lng: -122.4477,
-    description: "A short, steep climb to one of the best 360° panoramas of San Francisco. Spectacular at sunset.",
-    address: "501 Twin Peaks Blvd, San Francisco",
-    website: "https://sfrecpark.org/facilities/facility/details/Twin-Peaks",
-    free: true,
-    tags: ["free", "short", "panorama", "sunset"],
+    "id": "conservatory-flowers",
+    "name": "Conservatory of Flowers",
+    "category": "Botanic Garden",
+    "area": "San Francisco",
+    "lat": 37.7723,
+    "lng": -122.4602,
+    "description": "A striking white Victorian glasshouse (1879) filled with tropical plants, orchids, and carnivorous oddities.",
+    "address": "100 John F Kennedy Dr, San Francisco",
+    "website": "https://conservatoryofflowers.org",
+    "free": false,
+    "tags": [
+      "historic",
+      "tropical",
+      "glasshouse",
+      "golden gate park"
+    ],
+    "hours": "Tue–Sun 10am–4:30pm · closed Mon",
+    "more": {
+      "label": "Highlights & blooms",
+      "items": [
+        "Victorian glasshouse (1879)",
+        "Tropical plants, orchids & carnivores"
+      ],
+      "link": {
+        "text": "Visitor info →",
+        "url": "https://conservatoryofflowers.org"
+      }
+    }
   },
   {
-    id: "muir-woods",
-    name: "Muir Woods National Monument",
-    category: "Hike",
-    area: "Marin",
-    lat: 37.8970, lng: -122.5811,
-    description: "Walk among ancient coast redwoods on gentle boardwalk loops. Reservations required for parking/shuttle.",
-    address: "1 Muir Woods Rd, Mill Valley",
-    website: "https://www.nps.gov/muwo",
-    free: false,
-    tags: ["redwoods", "easy", "boardwalk", "reservations"],
+    "id": "japanese-tea-garden",
+    "name": "Japanese Tea Garden",
+    "category": "Botanic Garden",
+    "area": "San Francisco",
+    "lat": 37.7702,
+    "lng": -122.4703,
+    "description": "The oldest public Japanese garden in the U.S. — pagodas, koi ponds, a moon bridge, and a tea house. Free before 10am certain days.",
+    "address": "75 Hagiwara Tea Garden Dr, San Francisco",
+    "website": "https://japaneseteagardensf.com",
+    "free": false,
+    "tags": [
+      "japanese garden",
+      "koi",
+      "tea",
+      "golden gate park"
+    ],
+    "hours": "Daily 9am–5:45pm (shorter in winter)",
+    "more": {
+      "label": "Highlights & blooms",
+      "items": [
+        "Pagodas, koi ponds & moon bridge",
+        "Tea house on site"
+      ],
+      "link": {
+        "text": "Visitor info →",
+        "url": "https://japaneseteagardensf.com"
+      }
+    }
   },
   {
-    id: "mount-tam",
-    name: "Mount Tamalpais (Dipsea / East Peak)",
-    category: "Hike",
-    area: "Marin",
-    lat: 37.9236, lng: -122.5965,
-    description: "Marin's iconic mountain with trails for every level and sweeping views over the bay, ocean, and fog.",
-    address: "Mount Tamalpais State Park, Mill Valley",
-    website: "https://www.parks.ca.gov/?page_id=471",
-    free: true,
-    tags: ["free", "mountain", "views", "varied difficulty"],
+    "id": "uc-botanical",
+    "name": "UC Botanical Garden at Berkeley",
+    "category": "Botanic Garden",
+    "area": "East Bay",
+    "lat": 37.8757,
+    "lng": -122.2386,
+    "description": "34 acres in Strawberry Canyon with 10,000+ plant types from around the world and great bay views.",
+    "address": "200 Centennial Dr, Berkeley",
+    "website": "https://botanicalgarden.berkeley.edu",
+    "free": false,
+    "tags": [
+      "diverse plants",
+      "bay views",
+      "hillside"
+    ],
+    "hours": "Daily 10am–5pm (closed first Tue)",
+    "more": {
+      "label": "Highlights & blooms",
+      "items": [
+        "10,000+ plants worldwide",
+        "Bay views in Strawberry Canyon"
+      ],
+      "link": {
+        "text": "Visitor info →",
+        "url": "https://botanicalgarden.berkeley.edu"
+      }
+    }
   },
   {
-    id: "tennessee-valley",
-    name: "Tennessee Valley Trail",
-    category: "Hike",
-    area: "Marin",
-    lat: 37.8590, lng: -122.5360,
-    description: "An easy, mostly flat walk through a valley to a secluded cove beach. Great for all ages.",
-    address: "Tennessee Valley Rd, Mill Valley",
-    website: "https://www.nps.gov/goga/planyourvisit/tennessee-valley.htm",
-    free: true,
-    tags: ["free", "easy", "beach", "family friendly"],
+    "id": "ruth-bancroft",
+    "name": "Ruth Bancroft Garden",
+    "category": "Botanic Garden",
+    "area": "East Bay",
+    "lat": 37.9101,
+    "lng": -122.0652,
+    "description": "A renowned dry garden of succulents and cacti in Walnut Creek — a pioneer of water-wise landscaping.",
+    "address": "1552 Bancroft Rd, Walnut Creek",
+    "website": "https://www.ruthbancroftgarden.org",
+    "free": false,
+    "tags": [
+      "succulents",
+      "cacti",
+      "drought tolerant"
+    ],
+    "hours": "Tue–Sun 10am–4pm (seasonal)",
+    "more": {
+      "label": "Highlights & blooms",
+      "items": [
+        "Renowned dry garden of succulents & cacti"
+      ],
+      "link": {
+        "text": "Visitor info →",
+        "url": "https://www.ruthbancroftgarden.org"
+      }
+    }
   },
   {
-    id: "mount-diablo",
-    name: "Mount Diablo State Park",
-    category: "Hike",
-    area: "East Bay",
-    lat: 37.8816, lng: -121.9142,
-    description: "On a clear day, the summit offers one of the largest viewsheds in the world. Many trails plus a drive-up peak.",
-    address: "Mount Diablo State Park, Walnut Creek",
-    website: "https://www.parks.ca.gov/?page_id=517",
-    free: false,
-    tags: ["summit", "epic views", "varied difficulty"],
+    "id": "filoli",
+    "name": "Filoli Historic House & Garden",
+    "category": "Botanic Garden",
+    "area": "Peninsula",
+    "lat": 37.4709,
+    "lng": -122.3127,
+    "description": "A grand 1917 country estate in Woodside with 16 acres of formal English gardens and seasonal blooms.",
+    "address": "86 Cañada Rd, Woodside",
+    "website": "https://filoli.org",
+    "free": false,
+    "tags": [
+      "historic estate",
+      "formal gardens",
+      "seasonal blooms"
+    ],
+    "hours": "Tue–Sun 10am–5pm (seasonal)",
+    "more": {
+      "label": "Highlights & blooms",
+      "items": [
+        "16 acres of formal English gardens",
+        "Historic 1917 estate house"
+      ],
+      "link": {
+        "text": "Visitor info →",
+        "url": "https://filoli.org/events/"
+      }
+    }
   },
   {
-    id: "mori-point",
-    name: "Mori Point",
-    category: "Hike",
-    area: "Peninsula",
-    lat: 37.6360, lng: -122.4969,
-    description: "Pacifica bluff trails with crashing-surf views, wildflowers, and a coastal staircase loop.",
-    address: "Mori Point Rd, Pacifica",
-    website: "https://www.nps.gov/goga/planyourvisit/mori-point.htm",
-    free: true,
-    tags: ["free", "coastal", "bluffs", "wildflowers"],
-  },
-
-  // ----------------------------- Event Venues -----------------------------
-  {
-    id: "ferry-building",
-    name: "Ferry Building Marketplace",
-    category: "Event Venue",
-    area: "San Francisco",
-    lat: 37.7955, lng: -122.3937,
-    description: "Historic marketplace and the famous farmers' market (Tue/Thu/Sat) right on the Embarcadero waterfront.",
-    address: "1 Ferry Building, San Francisco",
-    website: "https://www.ferrybuildingmarketplace.com",
-    free: true,
-    tags: ["free", "farmers market", "food", "waterfront"],
-  },
-  {
-    id: "stern-grove",
-    name: "Stern Grove Festival",
-    category: "Event Venue",
-    area: "San Francisco",
-    lat: 37.7345, lng: -122.4759,
-    description: "Free Sunday summer concerts in a gorgeous eucalyptus-and-redwood grove amphitheater (June–August).",
-    address: "19th Ave & Sloat Blvd, San Francisco",
-    website: "https://sterngrove.org",
-    free: true,
-    tags: ["free", "concerts", "summer", "outdoor"],
+    "id": "lands-end",
+    "name": "Lands End Trail",
+    "category": "Hike",
+    "area": "San Francisco",
+    "lat": 37.78,
+    "lng": -122.5119,
+    "description": "Dramatic coastal cliff trail with Golden Gate views, shipwreck spotting, a labyrinth, and the Sutro Baths ruins.",
+    "address": "680 Point Lobos Ave, San Francisco",
+    "website": "https://www.nps.gov/goga/planyourvisit/landsend.htm",
+    "free": true,
+    "tags": [
+      "free",
+      "coastal",
+      "easy",
+      "views",
+      "ruins"
+    ],
+    "hours": "Open daily, sunrise–sunset · free",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "~3.4-mi coastal cliff trail",
+        "Sutro Baths ruins, labyrinth & GG views"
+      ],
+      "link": {
+        "text": "Trail map & info →",
+        "url": "https://www.nps.gov/goga/planyourvisit/landsend.htm"
+      }
+    }
   },
   {
-    id: "yerba-buena-gardens",
-    name: "Yerba Buena Gardens",
-    category: "Event Venue",
-    area: "San Francisco",
-    lat: 37.7847, lng: -122.4031,
-    description: "Downtown green space hosting a free outdoor festival of music, dance, and culture in spring & summer.",
-    address: "750 Howard St, San Francisco",
-    website: "https://ybgfestival.org",
-    free: true,
-    tags: ["free", "festival", "music", "downtown"],
+    "id": "twin-peaks",
+    "name": "Twin Peaks",
+    "category": "Hike",
+    "area": "San Francisco",
+    "lat": 37.7544,
+    "lng": -122.4477,
+    "description": "A short, steep climb to one of the best 360° panoramas of San Francisco. Spectacular at sunset.",
+    "address": "501 Twin Peaks Blvd, San Francisco",
+    "website": "https://sfrecpark.org/facilities/facility/details/Twin-Peaks",
+    "free": true,
+    "tags": [
+      "free",
+      "short",
+      "panorama",
+      "sunset"
+    ],
+    "hours": "Open daily · free",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "Short, steep climb",
+        "360° city panorama — superb at sunset"
+      ],
+      "link": {
+        "text": "Trail map & info →",
+        "url": "https://sfrecpark.org/facilities/facility/details/Twin-Peaks"
+      }
+    }
   },
   {
-    id: "the-fillmore",
-    name: "The Fillmore",
-    category: "Event Venue",
-    area: "San Francisco",
-    lat: 37.7841, lng: -122.4330,
-    description: "Legendary live-music hall where they still hand out free posters and apples. A piece of rock history.",
-    address: "1805 Geary Blvd, San Francisco",
-    website: "https://www.thefillmore.com",
-    free: false,
-    tags: ["live music", "historic", "concerts"],
+    "id": "muir-woods",
+    "name": "Muir Woods National Monument",
+    "category": "Hike",
+    "area": "Marin",
+    "lat": 37.897,
+    "lng": -122.5811,
+    "description": "Walk among ancient coast redwoods on gentle boardwalk loops. Reservations required for parking/shuttle.",
+    "address": "1 Muir Woods Rd, Mill Valley",
+    "website": "https://www.nps.gov/muwo",
+    "free": false,
+    "tags": [
+      "redwoods",
+      "easy",
+      "boardwalk",
+      "reservations"
+    ],
+    "hours": "Daily 8am–sunset · reservations required",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "Ancient coast redwoods",
+        "Gentle boardwalk loops"
+      ],
+      "link": {
+        "text": "Trail map & info →",
+        "url": "https://www.nps.gov/muwo/planyourvisit/reservations.htm"
+      }
+    }
   },
   {
-    id: "greek-theatre",
-    name: "Greek Theatre (Berkeley)",
-    category: "Event Venue",
-    area: "East Bay",
-    lat: 37.8736, lng: -122.2546,
-    description: "Open-air amphitheater on the UC Berkeley campus hosting top concerts under the stars.",
-    address: "2001 Gayley Rd, Berkeley",
-    website: "https://thegreekberkeley.com",
-    free: false,
-    tags: ["concerts", "outdoor", "amphitheater"],
+    "id": "mount-tam",
+    "name": "Mount Tamalpais (Dipsea / East Peak)",
+    "category": "Hike",
+    "area": "Marin",
+    "lat": 37.9236,
+    "lng": -122.5965,
+    "description": "Marin's iconic mountain with trails for every level and sweeping views over the bay, ocean, and fog.",
+    "address": "Mount Tamalpais State Park, Mill Valley",
+    "website": "https://www.parks.ca.gov/?page_id=471",
+    "free": true,
+    "tags": [
+      "free",
+      "mountain",
+      "views",
+      "varied difficulty"
+    ],
+    "hours": "Open daily, 7am–sunset",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "Trails for every level",
+        "Sweeping bay & ocean views"
+      ],
+      "link": {
+        "text": "Trail map & info →",
+        "url": "https://www.parks.ca.gov/?page_id=471"
+      }
+    }
   },
   {
-    id: "oakland-first-fridays",
-    name: "Oakland First Fridays",
-    category: "Event Venue",
-    area: "East Bay",
-    lat: 37.8085, lng: -122.2690,
-    description: "A free monthly street festival in the Uptown KONO district with art, food trucks, music, and makers.",
-    address: "Telegraph Ave, Oakland",
-    website: "https://oaklandfirstfridays.org",
-    free: true,
-    tags: ["free", "street festival", "art walk", "monthly"],
+    "id": "tennessee-valley",
+    "name": "Tennessee Valley Trail",
+    "category": "Hike",
+    "area": "Marin",
+    "lat": 37.859,
+    "lng": -122.536,
+    "description": "An easy, mostly flat walk through a valley to a secluded cove beach. Great for all ages.",
+    "address": "Tennessee Valley Rd, Mill Valley",
+    "website": "https://www.nps.gov/goga/planyourvisit/tennessee-valley.htm",
+    "free": true,
+    "tags": [
+      "free",
+      "easy",
+      "beach",
+      "family friendly"
+    ],
+    "hours": "Open daily, sunrise–sunset · free",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "Easy ~3.4-mi round trip",
+        "Ends at a secluded cove beach"
+      ],
+      "link": {
+        "text": "Trail map & info →",
+        "url": "https://www.nps.gov/goga/planyourvisit/tennessee-valley.htm"
+      }
+    }
   },
+  {
+    "id": "mount-diablo",
+    "name": "Mount Diablo State Park",
+    "category": "Hike",
+    "area": "East Bay",
+    "lat": 37.8816,
+    "lng": -121.9142,
+    "description": "On a clear day, the summit offers one of the largest viewsheds in the world. Many trails plus a drive-up peak.",
+    "address": "Mount Diablo State Park, Walnut Creek",
+    "website": "https://www.parks.ca.gov/?page_id=517",
+    "free": false,
+    "tags": [
+      "summit",
+      "epic views",
+      "varied difficulty"
+    ],
+    "hours": "Open daily, 8am–sunset",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "Summit with a vast viewshed",
+        "Drive-up or hike to the top"
+      ],
+      "link": {
+        "text": "Trail map & info →",
+        "url": "https://www.parks.ca.gov/?page_id=517"
+      }
+    }
+  },
+  {
+    "id": "mori-point",
+    "name": "Mori Point",
+    "category": "Hike",
+    "area": "Peninsula",
+    "lat": 37.636,
+    "lng": -122.4969,
+    "description": "Pacifica bluff trails with crashing-surf views, wildflowers, and a coastal staircase loop.",
+    "address": "Mori Point Rd, Pacifica",
+    "website": "https://www.nps.gov/goga/planyourvisit/mori-point.htm",
+    "free": true,
+    "tags": [
+      "free",
+      "coastal",
+      "bluffs",
+      "wildflowers"
+    ],
+    "hours": "Open daily, sunrise–sunset · free",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "Bluff trails over crashing surf",
+        "Wildflowers & a staircase loop"
+      ],
+      "link": {
+        "text": "Trail map & info →",
+        "url": "https://www.nps.gov/goga/planyourvisit/mori-point.htm"
+      }
+    }
+  },
+  {
+    "id": "ferry-building",
+    "name": "Ferry Building Marketplace",
+    "category": "Event Venue",
+    "area": "San Francisco",
+    "lat": 37.7955,
+    "lng": -122.3937,
+    "description": "Historic marketplace and the famous farmers' market (Tue/Thu/Sat) right on the Embarcadero waterfront.",
+    "address": "1 Ferry Building, San Francisco",
+    "website": "https://www.ferrybuildingmarketplace.com",
+    "free": true,
+    "tags": [
+      "free",
+      "farmers market",
+      "food",
+      "waterfront"
+    ],
+    "hours": "Mon–Fri 10am–7pm · Sat 8am–6pm · Sun 11am–5pm",
+    "more": {
+      "label": "Upcoming events",
+      "items": [
+        "Artisan food hall",
+        "Farmers market Tue/Thu/Sat"
+      ],
+      "link": {
+        "text": "See upcoming events →",
+        "url": "https://www.ferrybuildingmarketplace.com/events/"
+      }
+    }
+  },
+  {
+    "id": "stern-grove",
+    "name": "Stern Grove Festival",
+    "category": "Event Venue",
+    "area": "San Francisco",
+    "lat": 37.7345,
+    "lng": -122.4759,
+    "description": "Free Sunday summer concerts in a gorgeous eucalyptus-and-redwood grove amphitheater (June–August).",
+    "address": "19th Ave & Sloat Blvd, San Francisco",
+    "website": "https://sterngrove.org",
+    "free": true,
+    "tags": [
+      "free",
+      "concerts",
+      "summer",
+      "outdoor"
+    ],
+    "hours": "Free concerts Sun afternoons, mid-June–Aug",
+    "more": {
+      "label": "Upcoming events",
+      "items": [
+        "Eucalyptus & redwood amphitheater",
+        "Free admission"
+      ],
+      "link": {
+        "text": "See upcoming events →",
+        "url": "https://sterngrove.org/lineup/"
+      }
+    }
+  },
+  {
+    "id": "yerba-buena-gardens",
+    "name": "Yerba Buena Gardens",
+    "category": "Event Venue",
+    "area": "San Francisco",
+    "lat": 37.7847,
+    "lng": -122.4031,
+    "description": "Downtown green space hosting a free outdoor festival of music, dance, and culture in spring & summer.",
+    "address": "750 Howard St, San Francisco",
+    "website": "https://ybgfestival.org",
+    "free": true,
+    "tags": [
+      "free",
+      "festival",
+      "music",
+      "downtown"
+    ],
+    "hours": "Festival events spring–fall · free",
+    "more": {
+      "label": "Upcoming events",
+      "items": [
+        "Outdoor music, dance & culture",
+        "Downtown green space"
+      ],
+      "link": {
+        "text": "See upcoming events →",
+        "url": "https://ybgfestival.org/events/"
+      }
+    }
+  },
+  {
+    "id": "the-fillmore",
+    "name": "The Fillmore",
+    "category": "Event Venue",
+    "area": "San Francisco",
+    "lat": 37.7841,
+    "lng": -122.433,
+    "description": "Legendary live-music hall where they still hand out free posters and apples. A piece of rock history.",
+    "address": "1805 Geary Blvd, San Francisco",
+    "website": "https://www.thefillmore.com",
+    "free": false,
+    "tags": [
+      "live music",
+      "historic",
+      "concerts"
+    ],
+    "hours": "Doors typically 7–8pm on show nights",
+    "more": {
+      "label": "Upcoming events",
+      "items": [
+        "Legendary live-music hall",
+        "Free posters & apples"
+      ],
+      "link": {
+        "text": "See upcoming events →",
+        "url": "https://www.thefillmore.com"
+      }
+    }
+  },
+  {
+    "id": "greek-theatre",
+    "name": "Greek Theatre (Berkeley)",
+    "category": "Event Venue",
+    "area": "East Bay",
+    "lat": 37.8736,
+    "lng": -122.2546,
+    "description": "Open-air amphitheater on the UC Berkeley campus hosting top concerts under the stars.",
+    "address": "2001 Gayley Rd, Berkeley",
+    "website": "https://thegreekberkeley.com",
+    "free": false,
+    "tags": [
+      "concerts",
+      "outdoor",
+      "amphitheater"
+    ],
+    "hours": "Event nights only · gates ~1hr before",
+    "more": {
+      "label": "Upcoming events",
+      "items": [
+        "Open-air concerts under the stars",
+        "On the UC Berkeley campus"
+      ],
+      "link": {
+        "text": "See upcoming events →",
+        "url": "https://thegreekberkeley.com/events/"
+      }
+    }
+  },
+  {
+    "id": "oakland-first-fridays",
+    "name": "Oakland First Fridays",
+    "category": "Event Venue",
+    "area": "East Bay",
+    "lat": 37.8085,
+    "lng": -122.269,
+    "description": "A free monthly street festival in the Uptown KONO district with art, food trucks, music, and makers.",
+    "address": "Telegraph Ave, Oakland",
+    "website": "https://oaklandfirstfridays.org",
+    "free": true,
+    "tags": [
+      "free",
+      "street festival",
+      "art walk",
+      "monthly"
+    ],
+    "hours": "First Friday each month, 5–9pm · free",
+    "more": {
+      "label": "Upcoming events",
+      "items": [
+        "Monthly street festival",
+        "Art, food trucks & makers"
+      ],
+      "link": {
+        "text": "See upcoming events →",
+        "url": "https://oaklandfirstfridays.org"
+      }
+    }
+  }
 ];
 
-// Make data available to app.js
 window.BAY = { CATEGORIES, AREAS, PLACES };
-
-
 })();
 </script>
   <script>
