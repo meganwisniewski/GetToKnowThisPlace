@@ -3,6 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- DIAGNOSTIC: surface JS errors / blocked-JS visibly on the page (temporary) -->
+  <script>
+    (function () {
+      function bar(id, bg) {
+        var d = document.getElementById(id);
+        if (!d) {
+          d = document.createElement('div');
+          d.id = id;
+          d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:' + bg +
+            ';color:#fff;font:13px/1.45 monospace;padding:10px 14px;white-space:pre-wrap';
+          (document.body || document.documentElement).appendChild(d);
+        }
+        return d;
+      }
+      window.addEventListener('error', function (e) {
+        bar('diag-err', '#b3261e').textContent =
+          'JS ERROR: ' + (e.message || (e.error && e.error.message) || e) +
+          (e.filename ? ('  @ ' + e.filename + ':' + e.lineno) : '');
+      }, true);
+      window.__diagBooted = function () {
+        bar('diag-ok', '#18a957').textContent = 'JS OK — app booted, ' +
+          ((window.BAY && window.BAY.PLACES && window.BAY.PLACES.length) || 0) + ' places loaded';
+      };
+    })();
+  </script>
   <title>Get To Know This Place · Bay Area Explorer</title>
   <meta name="description" content="An interactive guide to exploring San Francisco Bay Area art museums, galleries, movie theaters, parks, botanic gardens, hikes, and events." />
 
@@ -373,6 +399,12 @@ a { color: var(--accent); }
 </style>
 </head>
 <body>
+  <noscript>
+    <div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#b3261e;color:#fff;font:14px monospace;padding:12px 14px">
+      ⚠️ JavaScript is turned off or blocked in this browser — this app needs it to load the places & map.
+    </div>
+  </noscript>
+
   <header class="hero">
     <div class="hero-inner">
       <div class="brand">
@@ -382,7 +414,7 @@ a { color: var(--accent); }
           <p class="tagline">Your interactive guide to exploring the San Francisco Bay Area.</p>
         </div>
       </div>
-      <span id="resultCount" class="count-pill">0 places</span>
+      <span id="resultCount" class="count-pill">loading…</span>
     </div>
   </header>
 
@@ -1329,6 +1361,7 @@ function boot() {
   try { buildFilterControls(); } catch (e) { console.error("filters failed", e); }
   try { wireEvents(); }          catch (e) { console.error("events failed", e); }
   try { render(); }              catch (e) { console.error("render failed", e); }
+  if (window.__diagBooted) window.__diagBooted();
 
   // The map is optional and loaded asynchronously. Init now if Leaflet is
   // already here; otherwise let the <script onload> hook trigger it, and show
