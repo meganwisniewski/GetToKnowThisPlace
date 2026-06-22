@@ -500,6 +500,8 @@ a { color: var(--accent); }
 
   <!-- App data + logic FIRST, so the page always works even if the map CDN is blocked -->
   <script>
+(function(){
+
 // ============================================================================
 //  Get To Know This Place — curated Bay Area starter data
 //  Each place: id, name, category, area, lat, lng, description, address,
@@ -1072,8 +1074,12 @@ const PLACES = [
 // Make data available to app.js
 window.BAY = { CATEGORIES, AREAS, PLACES };
 
+
+})();
 </script>
   <script>
+(function(){
+
 // ============================================================================
 //  Get To Know This Place — app logic (v2)
 //  Vanilla JS. Three synced views (map / cards / list) over one filtered set.
@@ -1381,6 +1387,8 @@ if (document.readyState === "loading") {
   boot();
 }
 
+
+})();
 </script>
   <!-- Leaflet map library, loaded async so a blocked/slow CDN can never freeze the app -->
   <script async src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
