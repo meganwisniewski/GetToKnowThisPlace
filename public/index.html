@@ -2814,13 +2814,22 @@ function buildFilterControls() {
     btn.style.setProperty("--chip-color", meta.color);
     btn.textContent = `${meta.icon} ${name}`;
     btn.dataset.cat = name;
+    btn.title = `Show only ${name} — click again for all`;
     btn.addEventListener("click", () => {
-      if (state.activeCats.has(name)) state.activeCats.delete(name);
-      else state.activeCats.add(name);
-      btn.classList.toggle("active");
+      const isSolo = state.activeCats.size === 1 && state.activeCats.has(name);
+      // Click solos this category; clicking the solo'd chip restores all.
+      state.activeCats = isSolo ? new Set(Object.keys(CATEGORIES)) : new Set([name]);
+      syncChips();
       render();
     });
     chipWrap.appendChild(btn);
+  });
+}
+
+// Reflect state.activeCats onto the chip row.
+function syncChips() {
+  document.querySelectorAll(".chip").forEach((c) => {
+    c.classList.toggle("active", state.activeCats.has(c.dataset.cat));
   });
 }
 
@@ -3009,7 +3018,7 @@ function wireEvents() {
     document.getElementById("areaSelect").value = "";
     document.getElementById("freeOnly").checked = false;
     document.getElementById("favOnly").checked = false;
-    document.querySelectorAll(".chip").forEach((c) => c.classList.add("active"));
+    syncChips();
     render();
   });
 
