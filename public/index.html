@@ -129,12 +129,12 @@ a { color: var(--accent); }
   background: #fbfcfe;
   transition: border-color .15s, box-shadow .15s;
 }
-#searchInput:focus, #areaSelect:focus {
+#searchInput:focus, #areaSelect:focus, #visitedSelect:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(31,127,192,0.15);
 }
-#areaSelect {
+#areaSelect, #visitedSelect {
   padding: 11px 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
@@ -368,6 +368,20 @@ a { color: var(--accent); }
 .popup .place-hours { color: var(--muted); }
 .popup .place-more ul { color: var(--ink); }
 
+/* Visited toggle, badges & explore progress */
+.card-toggles { display: inline-flex; align-items: center; gap: 4px; }
+.visit-check { background: none; border: none; cursor: pointer; line-height: 1; font-size: 1.15rem; color: var(--good); filter: grayscale(1) opacity(0.4); transition: filter .14s, transform .14s; }
+.visit-check:hover { transform: scale(1.15); }
+.visit-check.on { filter: none; }
+.card.visited { border-color: var(--good); background: #fbfffc; }
+.card.visited .card-desc { opacity: .82; }
+.badge-visited { font-size: 0.7rem; font-weight: 800; color: #0c6b34; background: #d8f5e3; padding: 3px 9px; border-radius: 7px; letter-spacing: .3px; }
+#listTable tr.visited-row td:first-child { color: #0c6b34; font-weight: 700; }
+.explore-progress { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.progress-track { flex: 1; height: 8px; background: #e8eef5; border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #18a957, #58d18b); border-radius: 999px; transition: width .3s ease; }
+.progress-label { font-size: 0.82rem; font-weight: 700; color: var(--muted); white-space: nowrap; }
+
 /* ------------------------------- Footer --------------------------------- */
 .site-footer {
   margin-top: 36px;
@@ -433,10 +447,21 @@ a { color: var(--accent); }
           <span>⭐ Favorites</span>
         </label>
 
+        <select id="visitedSelect" aria-label="Filter by visited status">
+          <option value="all">All places</option>
+          <option value="todo">To-do (not visited)</option>
+          <option value="done">Visited ✓</option>
+        </select>
+
         <button id="resetBtn" class="ghost-btn" type="button">Reset</button>
       </div>
 
       <div class="filter-row chips" id="categoryChips" role="group" aria-label="Filter by category"></div>
+
+      <div class="explore-progress" aria-live="polite">
+        <div class="progress-track"><div id="progressBar" class="progress-fill" style="width:0%"></div></div>
+        <span id="progressLabel" class="progress-label">Explored 0 of 0</span>
+      </div>
     </section>
 
     <!-- ------------------------------- Tabs ------------------------------- -->
@@ -2834,6 +2859,8 @@ const state = {
   sortKey: "name",
   sortDir: 1,
   favorites: loadFavorites(),
+  visited: loadVisited(),
+  visitedFilter: "all",
 };
 
 // ----------------------------- Favorites ------------------------------------
@@ -2851,6 +2878,21 @@ function toggleFavorite(id) {
   render();
 }
 
+// ----------------------------- Visited (been there) ------------------------
+function loadVisited() {
+  try { return new Set(JSON.parse(localStorage.getItem("bay_visited") || "[]")); }
+  catch { return new Set(); }
+}
+function saveVisited() {
+  try { localStorage.setItem("bay_visited", JSON.stringify([...state.visited])); } catch {}
+}
+function toggleVisited(id) {
+  if (state.visited.has(id)) state.visited.delete(id);
+  else state.visited.add(id);
+  saveVisited();
+  render();
+}
+
 // ----------------------------- Filtering ------------------------------------
 function getFiltered() {
   const q = state.search.trim().toLowerCase();
@@ -2859,6 +2901,8 @@ function getFiltered() {
     if (state.area && p.area !== state.area) return false;
     if (state.freeOnly && !p.free) return false;
     if (state.favOnly && !state.favorites.has(p.id)) return false;
+    if (state.visitedFilter === "todo" && state.visited.has(p.id)) return false;
+    if (state.visitedFilter === "done" && !state.visited.has(p.id)) return false;
     if (q) {
       const hay = [p.name, p.description, p.category, p.area, ...(p.tags || [])].join(" ").toLowerCase();
       if (!hay.includes(q)) return false;
@@ -2915,8 +2959,11 @@ function initMap() {
   }).addTo(map);
   markerLayer = L.layerGroup().addTo(map);
   map.on("popupopen", (e) => {
-    const btn = e.popup.getElement().querySelector("[data-fav]");
-    if (btn) btn.addEventListener("click", () => toggleFavorite(btn.dataset.fav));
+    const el = e.popup.getElement();
+    const fb = el.querySelector("[data-fav]");
+    if (fb) fb.addEventListener("click", () => toggleFavorite(fb.dataset.fav));
+    const vb = el.querySelector("[data-visit]");
+    if (vb) vb.addEventListener("click", () => toggleVisited(vb.dataset.visit));
   });
   mapReady = true;
 }
@@ -2947,6 +2994,7 @@ function extraHtml(p) {
 function popupHtml(p) {
   const meta = CATEGORIES[p.category];
   const fav = state.favorites.has(p.id);
+  const visited = state.visited.has(p.id);
   return `
     <div class="popup">
       <span class="popup-cat" style="color:${meta.color}">${meta.icon} ${p.category}</span>
@@ -2958,6 +3006,7 @@ function popupHtml(p) {
         <a href="${p.website}" target="_blank" rel="noopener">Website ↗</a>
         <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Directions ↗</a>
         <button class="fav-btn" data-fav="${p.id}" title="Toggle favorite">${fav ? "⭐" : "☆"}</button>
+        <button class="fav-btn" data-visit="${p.id}" title="${visited ? "Visited" : "Mark visited"}">${visited ? "✅" : "☑️"}</button>
       </div>
     </div>`;
 }
@@ -2997,17 +3046,22 @@ function renderCards(places) {
   places.forEach((p) => {
     const meta = CATEGORIES[p.category];
     const fav = state.favorites.has(p.id);
+    const visited = state.visited.has(p.id);
     const card = document.createElement("article");
-    card.className = "card";
+    card.className = "card" + (visited ? " visited" : "");
     card.innerHTML = `
       <div class="card-top">
         <span class="card-cat" style="color:${meta.color};background:${meta.color}1a">${meta.icon} ${p.category}</span>
-        <button class="fav-star ${fav ? "on" : ""}" data-fav="${p.id}" title="Save to favorites">⭐</button>
+        <span class="card-toggles">
+          <button class="visit-check ${visited ? "on" : ""}" data-visit="${p.id}" title="${visited ? "Visited — click to unmark" : "Mark as visited"}">✓</button>
+          <button class="fav-star ${fav ? "on" : ""}" data-fav="${p.id}" title="Save to favorites">⭐</button>
+        </span>
       </div>
       <h3>${p.name}</h3>
       <div class="card-meta">
         <span>📍 ${p.area}</span>
         ${p.free ? '<span class="badge-free">FREE</span>' : ""}
+        ${visited ? '<span class="badge-visited">✓ Visited</span>' : ""}
       </div>
       <p class="card-desc">${p.description}</p>
       <div class="card-tags">${(p.tags || []).map((t) => `<span class="tag">${t}</span>`).join("")}</div>
@@ -3017,6 +3071,7 @@ function renderCards(places) {
         <a class="btn btn-primary" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Directions ↗</a>
       </div>`;
     card.querySelector("[data-fav]").addEventListener("click", () => toggleFavorite(p.id));
+    card.querySelector("[data-visit]").addEventListener("click", () => toggleVisited(p.id));
     grid.appendChild(card);
   });
 }
@@ -3038,9 +3093,11 @@ function renderList(places) {
 
   sorted.forEach((p) => {
     const meta = CATEGORIES[p.category];
+    const visited = state.visited.has(p.id);
     const tr = document.createElement("tr");
+    if (visited) tr.className = "visited-row";
     tr.innerHTML = `
-      <td>${p.name}</td>
+      <td>${visited ? "✓ " : ""}${p.name}</td>
       <td><span class="list-cat-dot" style="background:${meta.color}"></span>${p.category}</td>
       <td>${p.area}</td>
       <td>${p.free ? "🆓 Free" : "💲 Paid"}</td>
@@ -3057,9 +3114,20 @@ function render() {
   const places = getFiltered();
   document.getElementById("resultCount").textContent =
     `${places.length} place${places.length === 1 ? "" : "s"}`;
+  updateProgress();
   renderMap(places);
   renderCards(places);
   renderList(places);
+}
+
+function updateProgress() {
+  const total = PLACES.length;
+  const done = PLACES.filter((p) => state.visited.has(p.id)).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const bar = document.getElementById("progressBar");
+  const label = document.getElementById("progressLabel");
+  if (bar) bar.style.width = pct + "%";
+  if (label) label.textContent = `Explored ${done} of ${total}` + (done ? ` · ${pct}%` : "");
 }
 
 // ----------------------------- Tabs -----------------------------------------
@@ -3080,14 +3148,16 @@ function wireEvents() {
   document.getElementById("areaSelect").addEventListener("change", (e) => { state.area = e.target.value; render(); });
   document.getElementById("freeOnly").addEventListener("change", (e) => { state.freeOnly = e.target.checked; render(); });
   document.getElementById("favOnly").addEventListener("change", (e) => { state.favOnly = e.target.checked; render(); });
+  document.getElementById("visitedSelect").addEventListener("change", (e) => { state.visitedFilter = e.target.value; render(); });
 
   document.getElementById("resetBtn").addEventListener("click", () => {
-    state.search = ""; state.area = ""; state.freeOnly = false; state.favOnly = false;
+    state.search = ""; state.area = ""; state.freeOnly = false; state.favOnly = false; state.visitedFilter = "all";
     state.activeCats = new Set(Object.keys(CATEGORIES));
     document.getElementById("searchInput").value = "";
     document.getElementById("areaSelect").value = "";
     document.getElementById("freeOnly").checked = false;
     document.getElementById("favOnly").checked = false;
+    document.getElementById("visitedSelect").value = "all";
     syncChips();
     render();
   });
