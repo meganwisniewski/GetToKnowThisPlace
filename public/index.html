@@ -389,6 +389,9 @@ a { color: var(--accent); }
 .ebt-note a { font-weight: 700; }
 .ebt-note .ebt-verify { color: #8a6d1f; font-style: italic; }
 
+.lib-note { margin: 6px 0 0; font-size: 0.82rem; color: var(--muted); }
+.lib-note a { font-weight: 700; color: var(--accent); }
+
 /* ------------------------------- Footer --------------------------------- */
 .site-footer {
   margin-top: 36px;
@@ -606,7 +609,8 @@ const PLACES = [
         "text": "See exhibitions →",
         "url": "https://www.sfmoma.org/exhibitions/"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "deyoung",
@@ -646,7 +650,8 @@ const PLACES = [
         "text": "FAMSF visit info ↗",
         "url": "https://www.famsf.org/visit"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "legion-of-honor",
@@ -685,7 +690,8 @@ const PLACES = [
         "text": "FAMSF visit info ↗",
         "url": "https://www.famsf.org/visit"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "asian-art-museum",
@@ -724,7 +730,8 @@ const PLACES = [
         "text": "Asian Art visit info ↗",
         "url": "https://asianart.org/visit/"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "omca",
@@ -766,7 +773,8 @@ const PLACES = [
         "text": "Museums for All ↗",
         "url": "https://museums4all.org/"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "bampfa",
@@ -795,7 +803,8 @@ const PLACES = [
         "text": "See exhibitions →",
         "url": "https://bampfa.org/calendar"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "cantor",
@@ -864,7 +873,8 @@ const PLACES = [
         "text": "SJMA visit info ↗",
         "url": "https://sjmusart.org/visit/"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "minnesota-street",
@@ -2142,7 +2152,18 @@ const PLACES = [
         "text": "Plan a visit →",
         "url": "https://www.moadsf.org"
       }
-    }
+    },
+    "ebt": {
+      "price": "reduced admission",
+      "program": "Museums for All",
+      "verify": true,
+      "guidelines": "Reduced admission with an EBT/SNAP card + photo ID via Museums for All — confirm the current price at the museum.",
+      "link": {
+        "text": "MoAD visit info ↗",
+        "url": "https://www.moadsf.org/visit"
+      }
+    },
+    "libraryPass": true
   },
   {
     "id": "mission-dolores",
@@ -2267,7 +2288,8 @@ const PLACES = [
         "text": "Plan a visit →",
         "url": "https://www.waltdisney.org"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "fort-point",
@@ -2587,7 +2609,8 @@ const PLACES = [
         "text": "CJM visit info ↗",
         "url": "https://www.thecjm.org/visit"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "mexican-museum",
@@ -2743,7 +2766,8 @@ const PLACES = [
         "text": "Plan a visit →",
         "url": "https://uss-hornet.org"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "camron-stanford",
@@ -2804,7 +2828,8 @@ const PLACES = [
         "text": "Plan a visit →",
         "url": "https://computerhistory.org"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "history-park-sj",
@@ -2878,7 +2903,8 @@ const PLACES = [
         "text": "Academy tickets & access ↗",
         "url": "https://www.calacademy.org/buy-tickets"
       }
-    }
+    },
+    "libraryPass": true
   },
   {
     "id": "exploratorium",
@@ -2921,7 +2947,8 @@ const PLACES = [
         "text": "Exploratorium prices ↗",
         "url": "https://www.exploratorium.edu/visit/hours-prices"
       }
-    }
+    },
+    "libraryPass": true
   }
 ];
 
@@ -3079,6 +3106,10 @@ function extraHtml(p) {
     h += `<div class="ebt-note">💳 <strong>EBT/SNAP — ${p.ebt.price}</strong> (${p.ebt.program}). ${p.ebt.guidelines} `
        + (p.ebt.verify ? `<span class="ebt-verify">Terms change — confirm before you go.</span> ` : "")
        + `<a href="${p.ebt.link.url}" target="_blank" rel="noopener">${p.ebt.link.text}</a></div>`;
+  }
+  if (p.libraryPass) {
+    h += `<p class="lib-note">🎟️ Library cardholders: reserve a free or discounted pass via `
+       + `<a href="https://discoverandgo.net" target="_blank" rel="noopener">Discover &amp; Go</a> (check availability).</p>`;
   }
   if (p.more) {
     const items = (p.more.items || []).map((i) => `<li>${i}</li>`).join("");
