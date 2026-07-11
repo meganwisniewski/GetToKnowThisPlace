@@ -1,0 +1,14 @@
+{
+  "name": "Get To Know This Place",
+  "short_name": "Bay Explorer",
+  "description": "Explore the San Francisco Bay Area — museums, parks, hikes, history & more.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#103b63",
+  "theme_color": "#103b63",
+  "icons": [
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
