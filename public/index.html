@@ -441,7 +441,10 @@ a { color: var(--accent); }
   #map { height: 64vh; min-height: 300px; }
   .cards-grid { grid-template-columns: 1fr; gap: 14px; }
   .card { padding: 15px; }
-  .table-card { overflow-x: auto; }
+  .table-card { overflow-x: hidden; }
+  #listTable th, #listTable td { padding: 10px 10px; font-size: 0.9rem; }
+  #listTable th:nth-child(3), #listTable td:nth-child(3),
+  #listTable th:nth-child(4), #listTable td:nth-child(4) { display: none; }
   .site-footer { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px); }
 }
 
