@@ -65,7 +65,7 @@ a { color: var(--accent); }
     radial-gradient(1200px 400px at 80% -50%, rgba(255,255,255,0.18), transparent 60%),
     linear-gradient(120deg, #103b63 0%, #1c6ea4 55%, #ff6a3d 165%);
   color: #fff;
-  padding: 26px 0 30px;
+  padding: calc(env(safe-area-inset-top, 0px) + 22px) 0 28px;
   box-shadow: var(--shadow-md);
 }
 .hero-inner {
@@ -415,11 +415,34 @@ a { color: var(--accent); }
 
 /* ----------------------------- Responsive ------------------------------- */
 @media (max-width: 640px) {
-  .hero-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .hero h1 { font-size: 1.4rem; }
+  .hero-inner { flex-direction: column; align-items: flex-start; gap: 10px;
+    padding-left: max(18px, env(safe-area-inset-left)); padding-right: max(18px, env(safe-area-inset-right)); }
+  .hero h1 { font-size: 1.35rem; }
+  .tagline { font-size: 0.9rem; }
+  .brand { gap: 12px; }
+  .brand-mark { font-size: 2rem; }
+
+  .page { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
+  .filters { padding: 12px; margin-top: -14px; }
+  .filter-row { gap: 8px; }
+  .filter-row + .filter-row { margin-top: 10px; }
+  .search-wrap { flex: 1 1 100%; }
+  #areaSelect, #visitedSelect { flex: 1 1 calc(50% - 4px); min-width: 0; }
+  .toggle { flex: 1 1 calc(50% - 4px); justify-content: center; padding: 9px 6px; font-size: 0.84rem; }
+  .ghost-btn { flex: 1 1 100%; }
+
+  /* chips become a single swipeable row instead of a tall block */
+  .chips { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: 0 0 auto; }
+
   .tabs { display: flex; width: 100%; }
-  .tab { flex: 1; padding: 9px 8px; }
-  #map { height: 60vh; }
+  .tab { flex: 1; padding: 9px 6px; font-size: 0.9rem; }
+  #map { height: 64vh; min-height: 300px; }
+  .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+  .card { padding: 15px; }
+  .table-card { overflow-x: auto; }
+  .site-footer { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px); }
 }
 
 </style>
