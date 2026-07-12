@@ -402,6 +402,9 @@ a { color: var(--accent); }
 .lib-note { margin: 6px 0 0; font-size: 0.82rem; color: var(--muted); }
 .lib-note a { font-weight: 700; color: var(--accent); }
 
+.filter-primary { display: flex; gap: 10px; align-items: center; }
+.filters-toggle { display: none; }
+
 /* ------------------------------- Footer --------------------------------- */
 .site-footer {
   margin-top: 36px;
@@ -424,6 +427,14 @@ a { color: var(--accent); }
 
   .page { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
   .filters { padding: 12px; margin-top: -14px; }
+  .filter-primary { flex-wrap: nowrap; }
+  .filter-primary .search-wrap { flex: 1 1 auto; min-width: 0; }
+  .filters-toggle { display: inline-flex; flex: 0 0 auto; white-space: nowrap; padding: 11px 14px; }
+  .filters.collapsed .filters-adv { display: none; }
+  .tagline { display: none; }
+  .hero { padding-top: calc(env(safe-area-inset-top, 0px) + 12px); padding-bottom: 16px; }
+  .hero h1 { font-size: 1.25rem; }
+  .count-pill { padding: 6px 13px; font-size: 0.92rem; }
   .filter-row { gap: 8px; }
   .filter-row + .filter-row { margin-top: 10px; }
   .search-wrap { flex: 1 1 100%; }
@@ -473,12 +484,16 @@ a { color: var(--accent); }
   <div class="page">
     <!-- ----------------------------- Filters ----------------------------- -->
     <section class="filters" aria-label="Filters">
-      <div class="filter-row">
+      <div class="filter-row filter-primary">
         <div class="search-wrap">
           <span class="search-icon" aria-hidden="true">🔍</span>
           <input type="search" id="searchInput" placeholder="Search places — e.g. redwoods, mission, free…" autocomplete="off" />
         </div>
+        <button id="filtersToggle" class="filters-toggle ghost-btn" type="button" aria-expanded="true">Filters ▾</button>
+      </div>
 
+      <div class="filters-adv">
+        <div class="filter-row">
         <select id="areaSelect" aria-label="Filter by area">
           <option value="">All areas</option>
         </select>
@@ -507,7 +522,8 @@ a { color: var(--accent); }
         <button id="resetBtn" class="ghost-btn" type="button">Reset</button>
       </div>
 
-      <div class="filter-row chips" id="categoryChips" role="group" aria-label="Filter by category"></div>
+        <div class="filter-row chips" id="categoryChips" role="group" aria-label="Filter by category"></div>
+      </div>
 
       <div class="explore-progress" aria-live="polite">
         <div class="progress-track"><div id="progressBar" class="progress-fill" style="width:0%"></div></div>
@@ -3831,6 +3847,18 @@ function wireEvents() {
 
   document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => switchView(t.dataset.view)));
   document.getElementById("locateBtn").addEventListener("click", locateMe);
+
+  const filtersEl = document.querySelector(".filters");
+  const ftBtn = document.getElementById("filtersToggle");
+  if (ftBtn && filtersEl) {
+    const setCol = (c) => {
+      filtersEl.classList.toggle("collapsed", c);
+      ftBtn.setAttribute("aria-expanded", String(!c));
+      ftBtn.textContent = c ? "Filters ▾" : "Filters ▴";
+    };
+    ftBtn.addEventListener("click", () => setCol(!filtersEl.classList.contains("collapsed")));
+    if (window.matchMedia && window.matchMedia("(max-width: 640px)").matches) setCol(true);
+  }
 
   document.querySelectorAll("#listTable th[data-sort]").forEach((th) => {
     th.addEventListener("click", () => {
