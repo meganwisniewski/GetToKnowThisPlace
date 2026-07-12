@@ -605,6 +605,14 @@ const CATEGORIES = {
   "Science Museum": {
     "color": "#0891b2",
     "icon": "🔬"
+  },
+  "Experience": {
+    "color": "#ec4899",
+    "icon": "✨"
+  },
+  "Day Trip": {
+    "color": "#5c6bc0",
+    "icon": "🚗"
   }
 };
 
@@ -613,7 +621,9 @@ const AREAS = [
   "East Bay",
   "Marin",
   "Peninsula",
-  "South Bay"
+  "South Bay",
+  "Wine Country",
+  "Beyond the Bay"
 ];
 
 const PLACES = [
@@ -2985,6 +2995,494 @@ const PLACES = [
       }
     },
     "libraryPass": true
+  },
+  {
+    "id": "tomales-oysters",
+    "name": "Tomales Bay Oysters",
+    "category": "Experience",
+    "area": "Marin",
+    "lat": 38.1585,
+    "lng": -122.889,
+    "description": "Shuck and slurp just-harvested oysters on the shores of Tomales Bay — bring a picnic and make a day of it.",
+    "address": "Marshall, Tomales Bay",
+    "website": "https://hogislandoysters.com/",
+    "free": false,
+    "tags": [
+      "oysters",
+      "food",
+      "marin",
+      "waterfront"
+    ],
+    "hours": "Seasonal · reservations recommended",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Hog Island & Tomales Bay Oyster Co.",
+        "Picnic tables — bring your fixings",
+        "~1.5 hr north of SF"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://hogislandoysters.com/"
+      }
+    }
+  },
+  {
+    "id": "brentwood-upick",
+    "name": "Brentwood U-Pick Farms",
+    "category": "Experience",
+    "area": "East Bay",
+    "lat": 37.9319,
+    "lng": -121.6958,
+    "description": "Pick your own cherries, berries, peaches, and corn at Brentwood's family farms — a summer Bay Area tradition.",
+    "address": "Brentwood",
+    "website": "https://harvest4you.com/",
+    "free": false,
+    "tags": [
+      "u-pick",
+      "farms",
+      "fruit",
+      "summer"
+    ],
+    "hours": "Seasonal — cherries late May–June, berries & peaches in summer",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Cherries: late May–June",
+        "Berries, peaches & corn in summer",
+        "Check farm availability first"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://harvest4you.com/"
+      }
+    }
+  },
+  {
+    "id": "ferry-sausalito",
+    "name": "Ferry to Sausalito",
+    "category": "Experience",
+    "area": "Marin",
+    "lat": 37.8566,
+    "lng": -122.4855,
+    "description": "Ride the ferry across the bay to the waterfront village of Sausalito — bridge and skyline views the whole way.",
+    "address": "Sausalito (ferry from SF)",
+    "website": "https://www.goldengate.org/ferry/",
+    "free": false,
+    "tags": [
+      "ferry",
+      "sausalito",
+      "views",
+      "waterfront"
+    ],
+    "hours": "Ferry schedule varies daily",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Golden Gate Bridge & skyline views",
+        "Waterfront dining & galleries",
+        "Bring a bike and ride back"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://www.goldengate.org/ferry/"
+      }
+    }
+  },
+  {
+    "id": "half-moon-bay-golf",
+    "name": "Half Moon Bay Golf Links",
+    "category": "Experience",
+    "area": "Peninsula",
+    "lat": 37.4336,
+    "lng": -122.443,
+    "description": "Two oceanfront courses on the San Mateo coast, with dramatic cliffside holes above the Pacific.",
+    "address": "2 Miramontes Point Rd, Half Moon Bay",
+    "website": "https://www.halfmoonbaygolf.com/",
+    "free": false,
+    "tags": [
+      "golf",
+      "coast",
+      "ocean"
+    ],
+    "hours": "Tee times daily (book ahead)",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Ocean & Old Course layouts",
+        "Cliffside oceanfront holes",
+        "Ritz-Carlton on site"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://www.halfmoonbaygolf.com/"
+      }
+    }
+  },
+  {
+    "id": "polar-plunge",
+    "name": "Polar Plunge — Aquatic Park",
+    "category": "Experience",
+    "area": "San Francisco",
+    "lat": 37.8074,
+    "lng": -122.4225,
+    "description": "Brave a bracing dip in the cold Pacific — the calmer cove at Aquatic Park, or the wild surf at Ocean Beach.",
+    "address": "Aquatic Park, San Francisco",
+    "website": "https://dolphinclub.org/",
+    "free": true,
+    "tags": [
+      "free",
+      "cold plunge",
+      "swimming",
+      "waterfront"
+    ],
+    "hours": "Daylight — go with others; know the conditions",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Aquatic Park cove is calmer",
+        "Ocean Beach for the brave (strong rips)",
+        "Dolphin & South End clubs nearby"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://dolphinclub.org/"
+      }
+    }
+  },
+  {
+    "id": "taco-bell-cantina",
+    "name": "Taco Bell Cantina, Pacifica",
+    "category": "Experience",
+    "area": "Peninsula",
+    "lat": 37.5952,
+    "lng": -122.501,
+    "description": "The cult-favorite beachfront Taco Bell at Linda Mar — patio, fire pits, a surfboard rack, and a walk-up window.",
+    "address": "5200 Coast Hwy, Pacifica",
+    "website": "https://locations.tacobell.com/ca/pacifica/5200-coast-highway.html",
+    "free": false,
+    "tags": [
+      "food",
+      "beach",
+      "pacifica",
+      "quirky"
+    ],
+    "hours": "Open daily (see location page)",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Beachfront patio & fire pits",
+        "Walk-up window for surfers",
+        "Sunset spot at Linda Mar Beach"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://locations.tacobell.com/ca/pacifica/5200-coast-highway.html"
+      }
+    }
+  },
+  {
+    "id": "napa-sonoma",
+    "name": "Napa & Sonoma Wine Country",
+    "category": "Day Trip",
+    "area": "Wine Country",
+    "lat": 38.2975,
+    "lng": -122.2869,
+    "description": "World-famous vineyards and tasting rooms about an hour north — the quintessential Bay Area day trip.",
+    "address": "Napa & Sonoma Valleys",
+    "website": "https://www.visitnapavalley.com/",
+    "free": false,
+    "tags": [
+      "wine",
+      "tasting",
+      "north bay"
+    ],
+    "hours": "Tasting rooms ~10am–5pm · reservations recommended",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Napa & Sonoma valleys",
+        "Book tastings ahead",
+        "Use a tour or designated driver"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://www.visitnapavalley.com/"
+      }
+    }
+  },
+  {
+    "id": "santa-cruz",
+    "name": "Santa Cruz Beach & Boardwalk",
+    "category": "Day Trip",
+    "area": "Beyond the Bay",
+    "lat": 36.9644,
+    "lng": -122.0233,
+    "description": "Beach, a classic seaside boardwalk, surfing, and burritos on the sand — about an hour south.",
+    "address": "Santa Cruz",
+    "website": "https://beachboardwalk.com/",
+    "free": true,
+    "tags": [
+      "beach",
+      "boardwalk",
+      "surf"
+    ],
+    "hours": "Boardwalk seasonal · beach open daily",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Historic Beach Boardwalk rides",
+        "Surfing & Steamer Lane",
+        "Redwoods nearby (Henry Cowell)"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://beachboardwalk.com/"
+      }
+    }
+  },
+  {
+    "id": "highway-1",
+    "name": "Highway 1 Coastal Drive",
+    "category": "Day Trip",
+    "area": "Beyond the Bay",
+    "lat": 36.3714,
+    "lng": -121.9018,
+    "description": "One of the world's great drives — hug the cliffs south past Half Moon Bay toward Big Sur and the Bixby Bridge.",
+    "address": "Pacific Coast Highway (Hwy 1)",
+    "website": "https://www.visitcalifornia.com/attraction/highway-1-discovery-route/",
+    "free": true,
+    "tags": [
+      "scenic drive",
+      "coast",
+      "big sur"
+    ],
+    "hours": "Best in daylight · check for road closures",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Devil's Slide & Pigeon Point lighthouse",
+        "Bixby Creek Bridge & Big Sur",
+        "Fill up on gas before Big Sur"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://www.visitcalifornia.com/attraction/highway-1-discovery-route/"
+      }
+    }
+  },
+  {
+    "id": "carmel",
+    "name": "Carmel-by-the-Sea",
+    "category": "Day Trip",
+    "area": "Beyond the Bay",
+    "lat": 36.5552,
+    "lng": -121.9233,
+    "description": "A storybook coastal town with a white-sand beach, galleries, and the scenic 17-Mile Drive next door.",
+    "address": "Carmel-by-the-Sea",
+    "website": "https://www.carmelcalifornia.com/",
+    "free": true,
+    "tags": [
+      "coastal town",
+      "beach",
+      "monterey"
+    ],
+    "hours": "Shops & galleries daytime",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "White-sand Carmel Beach",
+        "17-Mile Drive & Pebble Beach",
+        "Monterey Bay Aquarium close by"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://www.carmelcalifornia.com/"
+      }
+    }
+  },
+  {
+    "id": "yosemite",
+    "name": "Yosemite / Half Dome",
+    "category": "Day Trip",
+    "area": "Beyond the Bay",
+    "lat": 37.7459,
+    "lng": -119.5332,
+    "description": "Granite giants, waterfalls, and Half Dome — a big day (~3.5–4 hrs each way) or, better, an overnight from the Bay.",
+    "address": "Yosemite National Park",
+    "website": "https://www.nps.gov/yose/",
+    "free": false,
+    "tags": [
+      "national park",
+      "hiking",
+      "half dome"
+    ],
+    "hours": "Open daily · timed-entry reservations may apply",
+    "more": {
+      "label": "Good to know",
+      "items": [
+        "Tunnel View & Glacier Point",
+        "Half Dome cables need a permit",
+        "Better as an overnight than a day trip"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://www.nps.gov/yose/"
+      }
+    }
+  },
+  {
+    "id": "sf-crosstown-trail",
+    "name": "SF Crosstown Trail",
+    "category": "Hike",
+    "area": "San Francisco",
+    "lat": 37.7405,
+    "lng": -122.46,
+    "description": "A 17-mile route cutting diagonally across San Francisco — Candlestick Point to Lands End — through stairways, parks, and hidden corners.",
+    "address": "Candlestick Point → Lands End, SF",
+    "website": "https://crosstowntrail.org/",
+    "free": true,
+    "tags": [
+      "free",
+      "urban hike",
+      "stairways",
+      "long trail"
+    ],
+    "hours": "Open daily · do it in segments",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "~17 miles across 5 segments",
+        "Great in pieces via transit",
+        "Passes the 16th Ave Tiled Steps"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://crosstowntrail.org/"
+      }
+    }
+  },
+  {
+    "id": "mission-peak",
+    "name": "Mission Peak",
+    "category": "Hike",
+    "area": "East Bay",
+    "lat": 37.5127,
+    "lng": -121.8802,
+    "description": "A steep, hugely popular climb above Fremont to the famous summit pole and sweeping Bay Area views.",
+    "address": "Mission Peak Regional Preserve, Fremont",
+    "website": "https://www.ebparks.org/parks/mission-peak",
+    "free": true,
+    "tags": [
+      "free",
+      "steep hike",
+      "summit"
+    ],
+    "hours": "Open daily, dawn–dusk · limited parking",
+    "more": {
+      "label": "Trail notes",
+      "items": [
+        "~6 mi round trip, strenuous",
+        "The famous summit selfie pole",
+        "Start early — parking fills fast"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://www.ebparks.org/parks/mission-peak"
+      }
+    }
+  },
+  {
+    "id": "alamo-square",
+    "name": "Alamo Square",
+    "category": "Park",
+    "area": "San Francisco",
+    "lat": 37.7764,
+    "lng": -122.4346,
+    "description": "A hilltop park framed by the postcard 'Painted Ladies' Victorians, with the skyline rising behind them.",
+    "address": "Steiner St & Hayes St, SF",
+    "website": "https://sfrecpark.org/facilities/facility/details/Alamo-Square-215",
+    "free": true,
+    "tags": [
+      "free",
+      "painted ladies",
+      "views",
+      "picnic"
+    ],
+    "hours": "Open daily · free",
+    "more": {
+      "label": "Things to do",
+      "items": [
+        "The Painted Ladies photo row",
+        "Picnic on the lawn",
+        "Skyline views to the east"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://sfrecpark.org/facilities/facility/details/Alamo-Square-215"
+      }
+    }
+  },
+  {
+    "id": "lafayette-reservoir",
+    "name": "Lafayette Reservoir",
+    "category": "Park",
+    "area": "East Bay",
+    "lat": 37.8869,
+    "lng": -122.13,
+    "description": "An easy loop around a pretty reservoir in the East Bay hills — picnics, paddling, and stroller-friendly paths.",
+    "address": "3849 Mt Diablo Blvd, Lafayette",
+    "website": "https://www.ebmud.com/recreation/east-bay/lafayette-reservoir/",
+    "free": false,
+    "tags": [
+      "reservoir",
+      "easy loop",
+      "picnic"
+    ],
+    "hours": "Open daily · parking fee",
+    "more": {
+      "label": "Things to do",
+      "items": [
+        "2.7-mi paved lakeside loop",
+        "Rowboat & pedal-boat rentals",
+        "Shaded picnic spots"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://www.ebmud.com/recreation/east-bay/lafayette-reservoir/"
+      }
+    }
+  },
+  {
+    "id": "fort-mason",
+    "name": "Fort Mason Center",
+    "category": "Event Venue",
+    "area": "San Francisco",
+    "lat": 37.8065,
+    "lng": -122.4306,
+    "description": "A waterfront arts-and-events campus in a former Army post — Sunday farmers market, food trucks, festivals, and galleries.",
+    "address": "2 Marina Blvd, San Francisco",
+    "website": "https://fortmason.org/",
+    "free": true,
+    "tags": [
+      "free",
+      "farmers market",
+      "festivals",
+      "waterfront"
+    ],
+    "hours": "Grounds daily · market & events vary",
+    "more": {
+      "label": "Upcoming events",
+      "items": [
+        "Sunday farmers market",
+        "Off the Grid food trucks (seasonal)",
+        "Festivals, fairs & flea markets"
+      ],
+      "link": {
+        "text": "More info →",
+        "url": "https://fortmason.org/"
+      }
+    }
   }
 ];
 
