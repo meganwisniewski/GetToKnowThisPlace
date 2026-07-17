@@ -24,7 +24,7 @@ export async function onRequest(context) {
 
   try {
     if (request.method === "GET") {
-      const res = await turso(env, "SELECT json, updated_at FROM appdata WHERE id = 'main'");
+      const res = await turso(env, "SELECT json, updated_at FROM bay_state WHERE id = 'main'");
       const row = res.rows[0];
       if (!row) return json({ state: null, updated_at: 0 }, 200, cors);
       return json({ state: safeParse(row[0]), updated_at: Number(row[1]) || 0 }, 200, cors);
@@ -39,7 +39,7 @@ export async function onRequest(context) {
       });
       await turso(env, {
         sql:
-          "INSERT INTO appdata (id, json, updated_at) VALUES ('main', ?, ?) " +
+          "INSERT INTO bay_state (id, json, updated_at) VALUES ('main', ?, ?) " +
           "ON CONFLICT(id) DO UPDATE SET json = excluded.json, updated_at = excluded.updated_at",
         args: [
           { type: "text", value: payload },
