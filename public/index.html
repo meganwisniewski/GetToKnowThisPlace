@@ -405,6 +405,13 @@ a { color: var(--accent); }
 .filter-primary { display: flex; gap: 10px; align-items: center; }
 .filters-toggle { display: none; }
 
+.hero-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sync-btn { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.3); color: #fff; font-weight: 700; padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 0.9rem; white-space: nowrap; }
+.sync-btn:hover { background: rgba(255,255,255,0.26); }
+.sync-btn[data-status="on"] { background: #18a957; border-color: #3ec27a; }
+.sync-btn[data-status="busy"] { opacity: 0.85; }
+.sync-btn[data-status="err"] { background: #b3261e; border-color: #d0453c; }
+
 /* ------------------------------- Footer --------------------------------- */
 .site-footer {
   margin-top: 36px;
@@ -477,7 +484,10 @@ a { color: var(--accent); }
           <p class="tagline">Your interactive guide to exploring the San Francisco Bay Area.</p>
         </div>
       </div>
-      <span id="resultCount" class="count-pill">loading…</span>
+      <div class="hero-actions">
+        <span id="resultCount" class="count-pill">loading…</span>
+        <button id="syncBtn" class="sync-btn" type="button" title="Cloud sync across devices">☁︎ Sync</button>
+      </div>
     </div>
   </header>
 
@@ -3531,6 +3541,8 @@ const state = {
   visited: loadVisited(),
   visitedFilter: "all",
   ebtOnly: false,
+  syncPass: (function () { try { return localStorage.getItem("bay_sync_pass") || ""; } catch { return ""; } })(),
+  updatedAt: (function () { try { return Number(localStorage.getItem("bay_updated_at")) || 0; } catch { return 0; } })(),
 };
 
 // ----------------------------- Favorites ------------------------------------
@@ -3545,6 +3557,7 @@ function toggleFavorite(id) {
   if (state.favorites.has(id)) state.favorites.delete(id);
   else state.favorites.add(id);
   saveFavorites();
+  touchSync();
   render();
 }
 
@@ -3560,7 +3573,75 @@ function toggleVisited(id) {
   if (state.visited.has(id)) state.visited.delete(id);
   else state.visited.add(id);
   saveVisited();
+  touchSync();
   render();
+}
+
+// ----------------------------- Cloud sync (Turso) ---------------------------
+let __pushTimer = null;
+function syncEnabled() { return !!state.syncPass; }
+function setSyncStatus(s) {
+  const b = document.getElementById("syncBtn");
+  if (!b) return;
+  b.dataset.status = s;
+  b.textContent = s === "on" ? "\u2601\uFE0E Synced" : s === "busy" ? "\u2601\uFE0E Syncing\u2026"
+    : s === "err" ? "\u2601\uFE0E Sync error" : "\u2601\uFE0E Sync";
+}
+function touchSync() {
+  state.updatedAt = Date.now();
+  try { localStorage.setItem("bay_updated_at", String(state.updatedAt)); } catch {}
+  if (syncEnabled()) { clearTimeout(__pushTimer); __pushTimer = setTimeout(cloudPush, 900); }
+}
+async function apiState(method, body) {
+  return fetch("/api/state", {
+    method,
+    headers: { "content-type": "application/json", "x-app-passphrase": state.syncPass },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+}
+async function cloudPull() {
+  if (!syncEnabled()) return;
+  setSyncStatus("busy");
+  try {
+    const r = await apiState("GET");
+    if (r.status === 401) { setSyncStatus("err"); alert("Sync passphrase was rejected by the server."); return; }
+    if (r.status === 503) { setSyncStatus("err"); alert("Sync isn't configured on the server yet (missing Turso settings)."); return; }
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+    if (d.state && (d.updated_at || 0) > (state.updatedAt || 0)) {
+      state.favorites = new Set(d.state.favorites || []);
+      state.visited = new Set(d.state.visited || []);
+      state.updatedAt = d.updated_at || Date.now();
+      saveFavorites(); saveVisited();
+      try { localStorage.setItem("bay_updated_at", String(state.updatedAt)); } catch {}
+      render();
+      setSyncStatus("on");
+    } else {
+      await cloudPush();
+    }
+  } catch (e) { console.error("cloudPull", e); setSyncStatus("err"); }
+}
+async function cloudPush() {
+  if (!syncEnabled()) return;
+  setSyncStatus("busy");
+  try {
+    const body = { favorites: [...state.favorites], visited: [...state.visited], updated_at: state.updatedAt || Date.now() };
+    const r = await apiState("PUT", body);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    setSyncStatus("on");
+  } catch (e) { console.error("cloudPush", e); setSyncStatus("err"); }
+}
+function enableSyncPrompt() {
+  const v = window.prompt(
+    "Cloud sync keeps your favorites and visited list in sync across all your devices.\n\n" +
+    "Enter your sync passphrase (the APP_PASSPHRASE set in Cloudflare). Use the same one on every device.\n" +
+    "Leave blank to turn sync off.",
+    state.syncPass || ""
+  );
+  if (v === null) return;
+  state.syncPass = v.trim();
+  try { localStorage.setItem("bay_sync_pass", state.syncPass); } catch {}
+  if (state.syncPass) cloudPull(); else setSyncStatus("off");
 }
 
 // ----------------------------- Filtering ------------------------------------
@@ -3860,6 +3941,9 @@ function wireEvents() {
     if (window.matchMedia && window.matchMedia("(max-width: 640px)").matches) setCol(true);
   }
 
+  const syncBtn = document.getElementById("syncBtn");
+  if (syncBtn) syncBtn.addEventListener("click", enableSyncPrompt);
+
   document.querySelectorAll("#listTable th[data-sort]").forEach((th) => {
     th.addEventListener("click", () => {
       const key = th.dataset.sort;
@@ -3891,6 +3975,7 @@ function boot() {
   try { buildFilterControls(); } catch (e) { console.error("filters failed", e); }
   try { wireEvents(); }          catch (e) { console.error("events failed", e); }
   try { render(); }              catch (e) { console.error("render failed", e); }
+  try { if (state.syncPass) { setSyncStatus("busy"); cloudPull(); } else setSyncStatus("off"); } catch (e) { console.error("sync init failed", e); }
 
   // The map is optional and loaded asynchronously. Init now if Leaflet is
   // already here; otherwise let the <script onload> hook trigger it, and show
