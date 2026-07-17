@@ -18,6 +18,20 @@ export async function onRequest(context) {
   };
   if (request.method === "OPTIONS") return new Response(null, { headers: cors });
 
+  // Safe diagnostic: /api/state?check=1 reports which env vars are present
+  // (booleans only — never the values). Lets us see exactly what's missing.
+  if (new URL(request.url).searchParams.get("check") === "1") {
+    return json(
+      {
+        APP_PASSPHRASE: !!env.APP_PASSPHRASE,
+        TURSO_DATABASE_URL: !!env.TURSO_DATABASE_URL,
+        TURSO_AUTH_TOKEN: !!env.TURSO_AUTH_TOKEN,
+      },
+      200,
+      cors
+    );
+  }
+
   if (!env.APP_PASSPHRASE || !env.TURSO_DATABASE_URL || !env.TURSO_AUTH_TOKEN) {
     return json({ error: "Sync not configured on the server yet." }, 503, cors);
   }
