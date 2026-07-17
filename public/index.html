@@ -394,10 +394,15 @@ a { color: var(--accent); }
 
 /* EBT / SNAP discount badge + note */
 .badge-ebt { font-size: 0.7rem; font-weight: 800; color: #5b3d0c; background: #ffe4a3; padding: 3px 9px; border-radius: 7px; letter-spacing: .3px; }
-.ebt-note { margin: 8px 0 2px; font-size: 0.84rem; line-height: 1.45; color: #4a3a1a; background: #fff8e8; border: 1px solid #f0dca6; border-radius: 10px; padding: 8px 11px; }
+.ebt-note { margin: 8px 0 2px; font-size: 0.84rem; line-height: 1.45; color: #4a3a1a; background: #fff8e8; border: 1px solid #f0dca6; border-radius: 10px; padding: 9px 11px; }
 .ebt-note strong { color: #5b3d0c; }
 .ebt-note a { font-weight: 700; }
-.ebt-note .ebt-verify { color: #8a6d1f; font-style: italic; }
+.ebt-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; margin-bottom: 3px; }
+.ebt-price { font-weight: 800; color: #5b3d0c; }
+.ebt-prog { font-size: 0.72rem; font-weight: 700; color: #7a5f16; background: #ffe4a3; padding: 1px 7px; border-radius: 6px; }
+.ebt-detail { color: #4a3a1a; }
+.ebt-meta { margin-top: 5px; }
+.ebt-note .ebt-verify { display: block; color: #8a6d1f; font-style: italic; font-size: 0.78rem; margin-bottom: 2px; }
 
 .lib-note { margin: 6px 0 0; font-size: 0.82rem; color: var(--muted); }
 .lib-note a { font-weight: 700; color: var(--accent); }
@@ -714,13 +719,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "$1 with EBT",
-      "program": "FAMSF access pricing",
-      "verify": true,
-      "guidelines": "FAMSF offers $1 general admission with an EBT/SNAP card + photo ID — verify at the door or on the FAMSF visit page.",
+      "price": "Free",
+      "program": "SF Museums for All",
+      "detail": "Free general admission with an EBT/SNAP or Medi-Cal card + photo ID (same-day, subject to availability). Special exhibitions are extra.",
+      "captured": "Jul 2026",
       "link": {
-        "text": "FAMSF visit info ↗",
-        "url": "https://www.famsf.org/visit"
+        "text": "FAMSF free & reduced admission ↗",
+        "url": "https://www.famsf.org/visit/free-reduced-admission"
       }
     },
     "libraryPass": true
@@ -754,13 +759,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "$1 with EBT",
-      "program": "FAMSF access pricing",
-      "verify": true,
-      "guidelines": "FAMSF offers $1 general admission with an EBT/SNAP card + photo ID — verify at the door or on the FAMSF visit page.",
+      "price": "Free",
+      "program": "SF Museums for All",
+      "detail": "Free general admission with an EBT/SNAP or Medi-Cal card + photo ID (same-day, subject to availability). Special exhibitions are extra.",
+      "captured": "Jul 2026",
       "link": {
-        "text": "FAMSF visit info ↗",
-        "url": "https://www.famsf.org/visit"
+        "text": "FAMSF free & reduced admission ↗",
+        "url": "https://www.famsf.org/visit/free-reduced-admission"
       }
     },
     "libraryPass": true
@@ -794,13 +799,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "discounted + free days",
-      "program": "Access pricing",
-      "verify": true,
-      "guidelines": "EBT/SNAP holders get discounted admission, and the museum also runs free days. Bring your card + photo ID and check current offers.",
+      "price": "Free",
+      "program": "SF Museums for All",
+      "detail": "Free general admission for up to 4 people with an EBT/SNAP or Medi-Cal card + proof of SF residency, at the admissions desk (same-day walk-up). Special exhibitions cost extra.",
+      "captured": "Jul 2026",
       "link": {
-        "text": "Asian Art visit info ↗",
-        "url": "https://asianart.org/visit/"
+        "text": "Asian Art free & reduced admission ↗",
+        "url": "https://about.asianart.org/ticketing/free-and-reduced-museum-admission/"
       }
     },
     "libraryPass": true
@@ -837,13 +842,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "$2 admission",
+      "price": "$1 / person",
       "program": "Museums for All",
-      "verify": false,
-      "guidelines": "Show your EBT/SNAP card + photo ID at the box office — covers up to 4 people, no reservation needed.",
+      "detail": "$1 per person for up to 4 people — including special exhibitions. Just ask for the “Museums for All” rate at the desk.",
+      "captured": "Jul 2026",
       "link": {
-        "text": "Museums for All ↗",
-        "url": "https://museums4all.org/"
+        "text": "OMCA visit info ↗",
+        "url": "https://museumca.org/visit/"
       }
     },
     "libraryPass": true
@@ -937,13 +942,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "reduced admission",
+      "price": "Free",
       "program": "Museums for All",
-      "verify": true,
-      "guidelines": "Reduced admission with an EBT/SNAP card + photo ID via Museums for All. Confirm the current price at the museum.",
+      "detail": "Free admission for up to 4 people with an EBT card + photo ID, shown on arrival.",
+      "captured": "Jul 2026",
       "link": {
-        "text": "SJMA visit info ↗",
-        "url": "https://sjmusart.org/visit/"
+        "text": "San Jose Museum of Art admissions ↗",
+        "url": "https://sjmusart.org/hours-and-admissions"
       }
     },
     "libraryPass": true
@@ -2226,13 +2231,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "reduced admission",
-      "program": "Museums for All",
-      "verify": true,
-      "guidelines": "Reduced admission with an EBT/SNAP card + photo ID via Museums for All — confirm the current price at the museum.",
+      "price": "Free",
+      "program": "SF Museums for All",
+      "detail": "Free general admission for up to 4 people with an EBT/SNAP card + photo ID (general is $15 otherwise).",
+      "captured": "Jul 2026",
       "link": {
-        "text": "MoAD visit info ↗",
-        "url": "https://www.moadsf.org/visit"
+        "text": "SF Museums for All (official list) ↗",
+        "url": "https://www.sfhsa.org/san-francisco-museums-all"
       }
     },
     "libraryPass": true
@@ -2673,13 +2678,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "discounted / free days",
-      "program": "Access pricing",
-      "verify": true,
-      "guidelines": "The CJM offers reduced or free admission on select days and access programs — bring your EBT/SNAP card + ID and check current offers.",
+      "price": "Free",
+      "program": "SF Museums for All",
+      "detail": "Free general admission with an EBT/SNAP, CalFresh or Medi-Cal card + photo ID (group size varies — confirm at the desk). Special exhibitions/events are extra.",
+      "captured": "Jul 2026",
       "link": {
-        "text": "CJM visit info ↗",
-        "url": "https://www.thecjm.org/visit"
+        "text": "CJM accessibility & admission ↗",
+        "url": "https://www.thecjm.org/accessibility_information"
       }
     },
     "libraryPass": true
@@ -2967,13 +2972,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "discounted admission",
+      "price": "$3 / person",
       "program": "Museums for All",
-      "verify": true,
-      "guidelines": "Bring your EBT/SNAP card + photo ID (typically covers up to 4). Confirm the current price on the Academy's tickets page.",
+      "detail": "$3 general admission with an EBT or WIC card, limit 4 per group. EBT online booking is also available.",
+      "captured": "Jul 2026",
       "link": {
-        "text": "Academy tickets & access ↗",
-        "url": "https://www.calacademy.org/buy-tickets"
+        "text": "Cal Academy free & reduced admission ↗",
+        "url": "https://www.calacademy.org/free-reduced-admission"
       }
     },
     "libraryPass": true
@@ -3011,13 +3016,13 @@ const PLACES = [
       }
     },
     "ebt": {
-      "price": "community discount",
-      "program": "Community access / Museums for All",
-      "verify": true,
-      "guidelines": "Discounted admission for EBT/SNAP holders — bring your card + photo ID. Check the Exploratorium's hours & prices page for current terms.",
+      "price": "$5 / person",
+      "program": "Museums for All",
+      "detail": "$5 tickets (Daytime or After Dark, 18+) for up to 4 people with an EBT/SNAP/CalFresh, Medi-Cal, WIC or Lifeline card, on site.",
+      "captured": "Jul 2026",
       "link": {
-        "text": "Exploratorium prices ↗",
-        "url": "https://www.exploratorium.edu/visit/hours-prices"
+        "text": "Exploratorium reduced rates ↗",
+        "url": "https://www.exploratorium.edu/visit/reduced-rates"
       }
     },
     "libraryPass": true
@@ -3734,9 +3739,15 @@ function extraHtml(p) {
   let h = "";
   if (p.hours) h += `<p class="place-hours">🕒 ${p.hours}</p>`;
   if (p.ebt) {
-    h += `<div class="ebt-note">💳 <strong>EBT/SNAP — ${p.ebt.price}</strong> (${p.ebt.program}). ${p.ebt.guidelines} `
-       + (p.ebt.verify ? `<span class="ebt-verify">Terms change — confirm before you go.</span> ` : "")
-       + `<a href="${p.ebt.link.url}" target="_blank" rel="noopener">${p.ebt.link.text}</a></div>`;
+    const e = p.ebt;
+    h += `<div class="ebt-note">`
+       + `<div class="ebt-head">💳 <span class="ebt-price">EBT/SNAP: ${e.price}</span>`
+       + `<span class="ebt-prog">${e.program}</span></div>`
+       + `<div class="ebt-detail">${e.detail}</div>`
+       + `<div class="ebt-meta">`
+       + (e.captured ? `<span class="ebt-verify">Price as of ${e.captured} — terms change, confirm before you go.</span> ` : "")
+       + `<a href="${e.link.url}" target="_blank" rel="noopener">${e.link.text}</a></div>`
+       + `</div>`;
   }
   if (p.libraryPass) {
     h += `<p class="lib-note">🎟️ Library cardholders: reserve a free or discounted pass via `
