@@ -269,6 +269,19 @@ a { color: var(--accent); }
 /* Leaflet popup theming */
 .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: var(--shadow-md); }
 .leaflet-popup-content { margin: 14px 16px; }
+/* Bigger, easy-to-tap close control on the popup (mobile) */
+.leaflet-popup-close-button {
+  width: 34px !important; height: 34px !important;
+  font-size: 24px !important; line-height: 30px !important;
+  padding: 0 !important; right: 4px !important; top: 4px !important;
+  color: #444 !important; z-index: 5;
+}
+.popup-close-btn {
+  display: block; width: 100%; margin-top: 10px; padding: 11px;
+  border: 1px solid #d7dde6; border-radius: 10px; background: #f4f6fa;
+  color: #33415c; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+}
+.popup-close-btn:active { background: #e7ebf2; }
 .popup .popup-cat { font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; }
 .popup h3 { margin: 4px 0 6px; font-size: 1.1rem; }
 .popup p { margin: 6px 0; font-size: 0.86rem; color: var(--muted); }
@@ -3906,6 +3919,8 @@ function initMap() {
     if (fb) fb.addEventListener("click", () => toggleFavorite(fb.dataset.fav));
     const vb = el.querySelector("[data-visit]");
     if (vb) vb.addEventListener("click", () => toggleVisited(vb.dataset.visit));
+    const cb = el.querySelector("[data-close]");
+    if (cb) cb.addEventListener("click", () => map.closePopup());
   });
   mapReady = true;
 }
@@ -3971,6 +3986,7 @@ function popupHtml(p) {
         <button class="fav-btn" data-fav="${p.id}" title="Toggle favorite">${fav ? "⭐" : "☆"}</button>
         <button class="fav-btn" data-visit="${p.id}" title="${visited ? "Visited" : "Mark visited"}">${visited ? "✅" : "☑️"}</button>
       </div>
+      <button class="popup-close-btn" data-close="1" type="button">Close ✕</button>
     </div>`;
 }
 
@@ -3979,7 +3995,14 @@ function renderMap(places) {
   markerLayer.clearLayers();
   places.forEach((p) => {
     L.marker([p.lat, p.lng], { icon: makeIcon(p.category) })
-      .bindPopup(popupHtml(p))
+      .bindPopup(popupHtml(p), {
+        maxWidth: 320,
+        maxHeight: Math.max(220, Math.round((map.getSize().y || 400) * 0.6)),
+        autoPan: true,
+        autoPanPadding: [16, 16],
+        keepInView: true,
+        className: "place-popup",
+      })
       .addTo(markerLayer);
   });
 }
