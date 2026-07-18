@@ -399,6 +399,10 @@ a { color: var(--accent); }
 .late-note strong { color: #3a2b6b; }
 .late-note .late-row { margin-top: 3px; }
 .late-note .late-day { font-weight: 800; color: #3a2b6b; }
+.day-banner { margin: 0 0 12px; padding: 10px 14px; background: #eef4ff; border: 1px solid #cdddfb; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; color: #1f3a63; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+.day-banner-count { font-weight: 800; }
+.day-banner-late { color: #3a2b6b; }
+.day-banner-late em { font-style: normal; font-weight: 700; opacity: 0.85; }
 .ebt-note { margin: 8px 0 2px; font-size: 0.84rem; line-height: 1.45; color: #4a3a1a; background: #fff8e8; border: 1px solid #f0dca6; border-radius: 10px; padding: 9px 11px; }
 .ebt-note strong { color: #5b3d0c; }
 .ebt-note a { font-weight: 700; }
@@ -518,6 +522,18 @@ a { color: var(--accent); }
           <option value="">All areas</option>
         </select>
 
+        <select id="dayFilter" aria-label="Filter by day open">
+          <option value="">Any day</option>
+          <option value="today">Open today</option>
+          <option value="1">Mondays</option>
+          <option value="2">Tuesdays</option>
+          <option value="3">Wednesdays</option>
+          <option value="4">Thursdays</option>
+          <option value="5">Fridays</option>
+          <option value="6">Saturdays</option>
+          <option value="0">Sundays</option>
+        </select>
+
         <label class="toggle">
           <input type="checkbox" id="freeOnly" />
           <span>Free only</span>
@@ -564,6 +580,7 @@ a { color: var(--accent); }
     </nav>
 
     <main>
+      <div id="dayBanner" class="day-banner" hidden></div>
       <!-- Map view -->
       <section id="view-map" class="view active">
         <div class="map-shell">
@@ -654,6 +671,10 @@ const CATEGORIES = {
   "Day Trip": {
     "color": "#5c6bc0",
     "icon": "🚗"
+  },
+  "Library": {
+    "color": "#5f27cd",
+    "icon": "📚"
   }
 };
 
@@ -3573,6 +3594,64 @@ const PLACES = [
         "url": "https://fortmason.org/"
       }
     }
+  },
+  {
+    "id": "mill-valley-library",
+    "name": "Mill Valley Public Library",
+    "category": "Library",
+    "area": "Marin",
+    "lat": 37.9059,
+    "lng": -122.5476,
+    "description": "A beloved redwood-shaded library with unusually strong programming — author talks, book clubs, film nights, and kids' story times. Open until 8pm most weeknights.",
+    "address": "375 Throckmorton Ave, Mill Valley",
+    "website": "https://www.millvalleylibrary.org",
+    "free": true,
+    "tags": [
+      "books",
+      "author talks",
+      "family friendly",
+      "free"
+    ],
+    "hours": "Mon–Thu 10am–8pm · Fri 10am–5pm · Sat–Sun 12–5pm",
+    "lateNight": [
+      {
+        "day": "Mon–Thu",
+        "hours": "til 8pm",
+        "note": "Open til 8pm most weeknights"
+      }
+    ],
+    "more": {
+      "label": "Programs & events",
+      "items": [
+        "Author talks & literary events",
+        "Book clubs (fiction, mystery & more)",
+        "Story times & kids' programs",
+        "Film screenings & community talks"
+      ],
+      "link": {
+        "text": "Live events calendar ↗",
+        "url": "https://millvalleylibrary.libcal.com/"
+      }
+    }
+  },
+  {
+    "id": "grand-lake-farmers-market",
+    "name": "Grand Lake Farmers Market",
+    "category": "Experience",
+    "area": "East Bay",
+    "lat": 37.811,
+    "lng": -122.247,
+    "description": "Oakland's flagship farmers market by Lake Merritt — 40+ farmers, 30 food purveyors, prepared food and live music, year-round rain or shine.",
+    "address": "Grand Ave & Lake Park Ave, Oakland",
+    "website": "https://www.agriculturalinstitute.org/grand-lake",
+    "free": true,
+    "tags": [
+      "food",
+      "outdoors",
+      "family friendly",
+      "weekend"
+    ],
+    "hours": "Sat 9am–2pm · year-round"
   }
 ];
 
@@ -3606,6 +3685,7 @@ const state = {
   visitedFilter: "all",
   ebtOnly: false,
   lateOnly: false,
+  dayFilter: "",
   syncPass: (function () { try { return localStorage.getItem("bay_sync_pass") || ""; } catch { return ""; } })(),
   updatedAt: (function () { try { return Number(localStorage.getItem("bay_updated_at")) || 0; } catch { return 0; } })(),
 };
@@ -3710,8 +3790,50 @@ function enableSyncPrompt() {
 }
 
 // ----------------------------- Filtering ------------------------------------
+// --- Day-of-week parsing from free-text hours. Returns a Set of weekday
+//     indices (0=Sun..6=Sat) a place is open, or null when the hours are
+//     unstructured (in which case we never hide the place). ---
+const DOW = { sun:0, sunday:0, mon:1, monday:1, tue:2, tues:2, tuesday:2, wed:3, weds:3, wednesday:3, thu:4, thur:4, thurs:4, thursday:4, fri:5, friday:5, sat:6, saturday:6 };
+const DAY_NAME = "(sun|sunday|mon|monday|tue|tues|tuesday|wed|weds|wednesday|thu|thur|thurs|thursday|fri|friday|sat|saturday)";
+function rangeDays(a, b) { const out = []; let i = a; for (let n = 0; n < 7; n++) { out.push(i); if (i === b) break; i = (i + 1) % 7; } return out; }
+function daySetFrom(str) {
+  const low = (str || "").toLowerCase();
+  const found = new Set();
+  const reRange = new RegExp(DAY_NAME + "\\s*[–-]\\s*" + DAY_NAME, "gi");
+  let m; while ((m = reRange.exec(low))) rangeDays(DOW[m[1]], DOW[m[2]]).forEach((d) => found.add(d));
+  const stripped = low.replace(reRange, " ");
+  const reSingle = new RegExp("\\b" + DAY_NAME + "\\b", "gi");
+  let s; while ((s = reSingle.exec(stripped))) found.add(DOW[s[1]]);
+  return found;
+}
+function openDays(p) {
+  if (p._days !== undefined) return p._days;
+  const low = (p.hours || "").toLowerCase();
+  let set = null;
+  if (/\b(daily|open daily|every day|ferry schedule|tee times|ships daily)\b/.test(low)) set = new Set([0,1,2,3,4,5,6]);
+  const found = daySetFrom(low);
+  if (found.size) { set = set || new Set(); found.forEach((d) => set.add(d)); }
+  // "closed X" / "closed X–Y" removals — but ignore monthly phrasing ("closed first Tue")
+  const reClosed = /closed\s+([^·)]+)/gi; let c;
+  while ((c = reClosed.exec(low))) {
+    const seg = c[1];
+    if (/first|second|third|fourth|last|1st|2nd|3rd|month/.test(seg)) continue;
+    const rm = daySetFrom(seg);
+    if (rm.size) { if (!set) set = new Set([0,1,2,3,4,5,6]); rm.forEach((d) => set.delete(d)); }
+  }
+  p._days = set;
+  return set;
+}
+function openOnDay(p, d) { const set = openDays(p); return set ? set.has(d) : true; }
+function lateOnDay(p, d) {
+  if (!(p.lateNight && p.lateNight.length)) return null;
+  const hit = p.lateNight.find((l) => daySetFrom(l.day).has(d));
+  return hit || null;
+}
+
 function getFiltered() {
   const q = state.search.trim().toLowerCase();
+  const day = state.dayFilter === "today" ? new Date().getDay() : (state.dayFilter === "" ? null : parseInt(state.dayFilter, 10));
   return PLACES.filter((p) => {
     if (!state.activeCats.has(p.category)) return false;
     if (state.area && p.area !== state.area) return false;
@@ -3721,6 +3843,7 @@ function getFiltered() {
     if (state.visitedFilter === "done" && !state.visited.has(p.id)) return false;
     if (state.ebtOnly && !p.ebt) return false;
     if (state.lateOnly && !(p.lateNight && p.lateNight.length)) return false;
+    if (day !== null && !openOnDay(p, day)) return false;
     if (q) {
       const hay = [p.name, p.description, p.category, p.area, ...(p.tags || [])].join(" ").toLowerCase();
       if (!hay.includes(q)) return false;
@@ -3955,10 +4078,29 @@ function render() {
   const places = getFiltered();
   document.getElementById("resultCount").textContent =
     `${places.length} place${places.length === 1 ? "" : "s"}`;
+  const day = state.dayFilter === "today" ? new Date().getDay() : (state.dayFilter === "" ? null : parseInt(state.dayFilter, 10));
+  renderDayBanner(places, day);
   updateProgress();
   renderMap(places);
   renderCards(places);
   renderList(places);
+}
+
+function renderDayBanner(places, day) {
+  const el = document.getElementById("dayBanner");
+  if (!el) return;
+  if (day === null) { el.hidden = true; el.innerHTML = ""; return; }
+  const names = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const label = state.dayFilter === "today" ? `today (${names[day]})` : `${names[day]}s`;
+  const late = places.map((p) => ({ p, l: lateOnDay(p, day) })).filter((x) => x.l);
+  let html = `<span class="day-banner-count">🗓️ ${places.length} place${places.length === 1 ? "" : "s"} open ${label}</span>`;
+  if (late.length) {
+    html += `<span class="day-banner-late">🌙 Open late: `
+      + late.slice(0, 6).map((x) => `${x.p.name} <em>${x.l.hours}</em>`).join(" · ")
+      + (late.length > 6 ? ` +${late.length - 6} more` : "") + `</span>`;
+  }
+  el.innerHTML = html;
+  el.hidden = false;
 }
 
 function updateProgress() {
@@ -3992,9 +4134,10 @@ function wireEvents() {
   document.getElementById("visitedSelect").addEventListener("change", (e) => { state.visitedFilter = e.target.value; render(); });
   document.getElementById("ebtOnly").addEventListener("change", (e) => { state.ebtOnly = e.target.checked; render(); });
   document.getElementById("lateOnly").addEventListener("change", (e) => { state.lateOnly = e.target.checked; render(); });
+  document.getElementById("dayFilter").addEventListener("change", (e) => { state.dayFilter = e.target.value; render(); });
 
   document.getElementById("resetBtn").addEventListener("click", () => {
-    state.search = ""; state.area = ""; state.freeOnly = false; state.favOnly = false; state.visitedFilter = "all"; state.ebtOnly = false; state.lateOnly = false;
+    state.search = ""; state.area = ""; state.freeOnly = false; state.favOnly = false; state.visitedFilter = "all"; state.ebtOnly = false; state.lateOnly = false; state.dayFilter = "";
     state.activeCats = new Set(Object.keys(CATEGORIES));
     document.getElementById("searchInput").value = "";
     document.getElementById("areaSelect").value = "";
@@ -4003,6 +4146,7 @@ function wireEvents() {
     document.getElementById("visitedSelect").value = "all";
     document.getElementById("ebtOnly").checked = false;
     document.getElementById("lateOnly").checked = false;
+    document.getElementById("dayFilter").value = "";
     syncChips();
     render();
   });
