@@ -394,6 +394,11 @@ a { color: var(--accent); }
 
 /* EBT / SNAP discount badge + note */
 .badge-ebt { font-size: 0.7rem; font-weight: 800; color: #5b3d0c; background: #ffe4a3; padding: 3px 9px; border-radius: 7px; letter-spacing: .3px; }
+.badge-late { font-size: 0.7rem; font-weight: 800; color: #3a2b6b; background: #e3ddff; padding: 3px 9px; border-radius: 7px; letter-spacing: .3px; }
+.late-note { margin: 8px 0 2px; font-size: 0.84rem; line-height: 1.45; color: #2f2a4a; background: #f2effd; border: 1px solid #d9d1f5; border-radius: 10px; padding: 8px 11px; }
+.late-note strong { color: #3a2b6b; }
+.late-note .late-row { margin-top: 3px; }
+.late-note .late-day { font-weight: 800; color: #3a2b6b; }
 .ebt-note { margin: 8px 0 2px; font-size: 0.84rem; line-height: 1.45; color: #4a3a1a; background: #fff8e8; border: 1px solid #f0dca6; border-radius: 10px; padding: 9px 11px; }
 .ebt-note strong { color: #5b3d0c; }
 .ebt-note a { font-weight: 700; }
@@ -526,6 +531,11 @@ a { color: var(--accent); }
         <label class="toggle">
           <input type="checkbox" id="ebtOnly" />
           <span>💳 EBT deals</span>
+        </label>
+
+        <label class="toggle">
+          <input type="checkbox" id="lateOnly" />
+          <span>🌙 Open late</span>
         </label>
 
         <select id="visitedSelect" aria-label="Filter by visited status">
@@ -687,7 +697,14 @@ const PLACES = [
         "url": "https://www.sfmoma.org/exhibitions/"
       }
     },
-    "libraryPass": true
+    "libraryPass": true,
+    "lateNight": [
+      {
+        "day": "Thu",
+        "hours": "til 8pm",
+        "note": "Galleries open late"
+      }
+    ]
   },
   {
     "id": "deyoung",
@@ -851,7 +868,14 @@ const PLACES = [
         "url": "https://museumca.org/visit/"
       }
     },
-    "libraryPass": true
+    "libraryPass": true,
+    "lateNight": [
+      {
+        "day": "Fri",
+        "hours": "til 9pm",
+        "note": "Friday Nights — Off the Grid food trucks & DJs (Apr–Oct)"
+      }
+    ]
   },
   {
     "id": "bampfa",
@@ -2217,7 +2241,7 @@ const PLACES = [
       "yerba buena",
       "culture"
     ],
-    "hours": "Wed–Sun 11am–6pm",
+    "hours": "Wed–Sun 11am–6pm · Thu til 8pm",
     "more": {
       "label": "Collections & highlights",
       "items": [
@@ -2240,7 +2264,14 @@ const PLACES = [
         "url": "https://www.sfhsa.org/san-francisco-museums-all"
       }
     },
-    "libraryPass": true
+    "libraryPass": true,
+    "lateNight": [
+      {
+        "day": "Thu",
+        "hours": "til 8pm",
+        "note": "Extended Thursday hours — all ages"
+      }
+    ]
   },
   {
     "id": "mission-dolores",
@@ -2981,7 +3012,14 @@ const PLACES = [
         "url": "https://www.calacademy.org/free-reduced-admission"
       }
     },
-    "libraryPass": true
+    "libraryPass": true,
+    "lateNight": [
+      {
+        "day": "Thu",
+        "hours": "6–10pm",
+        "note": "NightLife (21+) — DJs, cocktails, planetarium; separate ticket"
+      }
+    ]
   },
   {
     "id": "exploratorium",
@@ -3025,7 +3063,14 @@ const PLACES = [
         "url": "https://www.exploratorium.edu/visit/reduced-rates"
       }
     },
-    "libraryPass": true
+    "libraryPass": true,
+    "lateNight": [
+      {
+        "day": "Thu",
+        "hours": "6–10pm",
+        "note": "After Dark (18+) — adults-only themed evening"
+      }
+    ]
   },
   {
     "id": "tomales-oysters",
@@ -3546,6 +3591,7 @@ const state = {
   visited: loadVisited(),
   visitedFilter: "all",
   ebtOnly: false,
+  lateOnly: false,
   syncPass: (function () { try { return localStorage.getItem("bay_sync_pass") || ""; } catch { return ""; } })(),
   updatedAt: (function () { try { return Number(localStorage.getItem("bay_updated_at")) || 0; } catch { return 0; } })(),
 };
@@ -3660,6 +3706,7 @@ function getFiltered() {
     if (state.visitedFilter === "todo" && state.visited.has(p.id)) return false;
     if (state.visitedFilter === "done" && !state.visited.has(p.id)) return false;
     if (state.ebtOnly && !p.ebt) return false;
+    if (state.lateOnly && !(p.lateNight && p.lateNight.length)) return false;
     if (q) {
       const hay = [p.name, p.description, p.category, p.area, ...(p.tags || [])].join(" ").toLowerCase();
       if (!hay.includes(q)) return false;
@@ -3738,6 +3785,12 @@ function makeIcon(category) {
 function extraHtml(p) {
   let h = "";
   if (p.hours) h += `<p class="place-hours">🕒 ${p.hours}</p>`;
+  if (p.lateNight && p.lateNight.length) {
+    h += `<div class="late-note">🌙 <strong>Open late</strong>`
+       + p.lateNight.map((l) => `<div class="late-row"><span class="late-day">${l.day} ${l.hours}</span>`
+           + (l.note ? ` — ${l.note}` : "") + `</div>`).join("")
+       + `</div>`;
+  }
   if (p.ebt) {
     const e = p.ebt;
     h += `<div class="ebt-note">`
@@ -3772,7 +3825,7 @@ function popupHtml(p) {
       <span class="popup-cat" style="color:${meta.color}">${meta.icon} ${p.category}</span>
       <h3>${p.name}</h3>
       <p>${p.description}</p>
-      <p>📍 ${p.address}${p.free ? " · 🆓 Free" : ""}${p.ebt ? " · 💳 EBT deal" : ""}</p>
+      <p>📍 ${p.address}${p.free ? " · 🆓 Free" : ""}${p.ebt ? " · 💳 EBT deal" : ""}${p.lateNight && p.lateNight.length ? " · 🌙 " + p.lateNight.map((l) => l.day).join("/") + " late" : ""}</p>
       ${extraHtml(p)}
       <div class="popup-links">
         <a href="${p.website}" target="_blank" rel="noopener">Website ↗</a>
@@ -3834,6 +3887,7 @@ function renderCards(places) {
         <span>📍 ${p.area}</span>
         ${p.free ? '<span class="badge-free">FREE</span>' : ""}
         ${p.ebt ? '<span class="badge-ebt">💳 EBT deal</span>' : ""}
+        ${p.lateNight && p.lateNight.length ? '<span class="badge-late">🌙 ' + p.lateNight.map((l) => l.day).join("/") + ' late</span>' : ""}
         ${visited ? '<span class="badge-visited">✓ Visited</span>' : ""}
       </div>
       <p class="card-desc">${p.description}</p>
@@ -3923,9 +3977,10 @@ function wireEvents() {
   document.getElementById("favOnly").addEventListener("change", (e) => { state.favOnly = e.target.checked; render(); });
   document.getElementById("visitedSelect").addEventListener("change", (e) => { state.visitedFilter = e.target.value; render(); });
   document.getElementById("ebtOnly").addEventListener("change", (e) => { state.ebtOnly = e.target.checked; render(); });
+  document.getElementById("lateOnly").addEventListener("change", (e) => { state.lateOnly = e.target.checked; render(); });
 
   document.getElementById("resetBtn").addEventListener("click", () => {
-    state.search = ""; state.area = ""; state.freeOnly = false; state.favOnly = false; state.visitedFilter = "all"; state.ebtOnly = false;
+    state.search = ""; state.area = ""; state.freeOnly = false; state.favOnly = false; state.visitedFilter = "all"; state.ebtOnly = false; state.lateOnly = false;
     state.activeCats = new Set(Object.keys(CATEGORIES));
     document.getElementById("searchInput").value = "";
     document.getElementById("areaSelect").value = "";
@@ -3933,6 +3988,7 @@ function wireEvents() {
     document.getElementById("favOnly").checked = false;
     document.getElementById("visitedSelect").value = "all";
     document.getElementById("ebtOnly").checked = false;
+    document.getElementById("lateOnly").checked = false;
     syncChips();
     render();
   });
