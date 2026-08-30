@@ -452,6 +452,27 @@ a { color: var(--accent); }
 .site-footer a { color: var(--muted); }
 
 /* ----------------------------- Responsive ------------------------------- */
+/* ---- Embed / guest dashboard mode: /?embed=1  (&view=map|cards|list &day=today) ---- */
+body.embed .hero { padding: 8px 0; box-shadow: none; }
+body.embed .hero-inner { padding: 0 12px; }
+body.embed .hero .tagline { display: none; }
+body.embed .hero-actions { display: none; }
+body.embed .hero h1 { font-size: 1.15rem; }
+body.embed .brand-mark { font-size: 1.5rem; }
+body.embed .site-footer { display: none; }
+body.embed .explore-progress { display: none; }
+body.embed .page { padding: 0 10px; }
+body.embed .filters { margin-top: 8px; padding: 8px 10px; }
+body.embed .filters-toggle { display: inline-flex; flex: 0 0 auto; white-space: nowrap; padding: 10px 13px; }
+body.embed .filter-primary { flex-wrap: nowrap; }
+body.embed .filter-primary .search-wrap { flex: 1 1 auto; min-width: 0; }
+body.embed .filters.collapsed .filters-adv { display: none; }
+body.embed .tabs { margin: 8px 0; }
+body.embed #map { height: calc(100vh - 178px); min-height: 220px; }
+/* Guests don't manage the owner's personal marks */
+body.embed #favOnly, body.embed label.toggle:has(#favOnly), body.embed #visitedSelect { display: none; }
+body.embed .fav-btn, body.embed .fav-star, body.embed .visit-check { display: none; }
+
 @media (max-width: 640px) {
   .hero-inner { flex-direction: column; align-items: flex-start; gap: 10px;
     padding-left: max(18px, env(safe-area-inset-left)); padding-right: max(18px, env(safe-area-inset-right)); }
@@ -4352,10 +4373,32 @@ function tryInitMap() {
   catch (e) { console.error("map init failed", e); showMapError(); }
 }
 
+// Optional URL parameters — used to embed a compact, guest-friendly view in a
+// dashboard card: /?embed=1 (optionally &view=map|cards|list and &day=today).
+function applyUrlOptions() {
+  let params;
+  try { params = new URLSearchParams(location.search); } catch (e) { return; }
+  if (params.has("embed") || params.has("kiosk") || params.get("mode") === "embed") {
+    document.body.classList.add("embed");
+    const f = document.querySelector(".filters");
+    if (f) f.classList.add("collapsed");
+    const ft = document.getElementById("filtersToggle");
+    if (ft) ft.setAttribute("aria-expanded", "false");
+  }
+  const day = params.get("day");
+  if (day) {
+    const val = day === "today" ? "today" : (/^[0-6]$/.test(day) ? day : "");
+    if (val) { state.dayFilter = val; const sel = document.getElementById("dayFilter"); if (sel) sel.value = val; }
+  }
+  const view = params.get("view");
+  if (view && ["map", "cards", "list"].includes(view)) switchView(view);
+}
+
 function boot() {
   // Filters + UI first — these never depend on the map library.
   try { buildFilterControls(); } catch (e) { console.error("filters failed", e); }
   try { wireEvents(); }          catch (e) { console.error("events failed", e); }
+  try { applyUrlOptions(); }     catch (e) { console.error("url options failed", e); }
   try { render(); }              catch (e) { console.error("render failed", e); }
   try { if (state.syncPass) { setSyncStatus("busy"); cloudPull(); } else setSyncStatus("off"); } catch (e) { console.error("sync init failed", e); }
 
